@@ -2,7 +2,7 @@ Since the tus spec does not contain downloading files tusdotnet will automatical
 
 The following example requires that the data store implements `ITusReadableStore` (`TusDiskStore` does). If it does not one would have to figure out where the files are stored and read them in some other way.
 
-```
+```csharp
 app.Use(async (context, next) =>
 			{
 				// /files/ is where we store files
