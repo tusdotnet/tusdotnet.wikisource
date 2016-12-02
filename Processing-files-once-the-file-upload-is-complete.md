@@ -2,7 +2,7 @@ tusdotnet supports processing of a file once it has been completely uploaded usi
 
 Example
 
-```
+```csharp
 app.UseTus(request => new DefaultTusConfiguration
 			{
 				Store = new TusDiskStore(@"C:\tusfiles\"),
