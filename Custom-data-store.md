@@ -52,7 +52,7 @@ public interface ITusStore
 ```
 
 ## ITusCreationStore
-Required: yes | Tus-Extension: creation
+Required: no | Tus-Extension: creation
 
 This interface handles the creation extension of the protocol and is used for creating file references that one can later upload data to using the core protocol.
 
@@ -75,5 +75,23 @@ public interface ITusCreationStore
 	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
 	/// <returns>The Upload-Metadata header</returns>
 	Task<string> GetUploadMetadataAsync(string fileId, CancellationToken cancellationToken);
+}
+```
+
+## ITusReadableStore
+
+ITusReadableStore is a simple interface that is not part of the tus spec. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](https://github.com/smatsson/tusdotnet/wiki/Downloading-files) page.
+
+```csharp
+public interface ITusReadableStore
+{
+	/// <summary>
+	/// Get the file with the specified id. 
+	/// Returns null if the file was not found.
+	/// </summary>
+	/// <param name="fileId">The id of the file to get</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>The file or null if the file was not found</returns>
+	Task<ITusFile> GetFileAsync(string fileId, CancellationToken cancellationToken);
 }
 ```
