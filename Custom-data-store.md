@@ -14,6 +14,8 @@ Required: yes | Tus-Extension: \<none\>
 
 This is the interface for the core protocol. It must be implemented for the store to work. 
 
+Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
+
 ```csharp
 public interface ITusStore
 {
@@ -86,7 +88,7 @@ public interface ITusChecksumStore
 ## ITusConcatenationStore
 Required: no | Tus-Extension: concatenation
 
-*Note*: This extension requires that ITusCreationStore is also implemented.
+*Note*: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
 
 This interface adds support for the concatenation extension which allows a client to concatenate multiple files into a final file with a single POST request. 
 
