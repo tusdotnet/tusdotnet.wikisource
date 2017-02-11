@@ -10,8 +10,35 @@ This is the OWIN middleware responsible for handling all requests and returning 
 
 To setup the middleware, use the `UseTus` extension method and provide it with a configuration factory. Using this approach tusdotnet supports using different configurations for different requests (e.g. different users, tenants etc).
 
+The middleware will forward all requests that it cannot handle, e.g. GET requests or other requests missing e.g. the Tus-Resumable header. This way developers can still handle uploads even if the client that does not support the tus protocol.
+
 ## Configuration object
-The configuration object tells the TusMiddleware what options to use. It currently supports setting what URL to listen to, what data store to use and custom callbacks to run during the request processing.
+The configuration object tells the TusMiddleware what options to use. It currently supports setting what URL to listen to, what data store to use and custom callbacks to run during the request processing. The current configuration object looks like this: 
+
+```csharp
+public interface ITusConfiguration
+	{
+		/// <summary>
+		/// The url path to listen for uploads on, e.g. "/files"
+		/// </summary>
+		string UrlPath { get; }
+
+		/// <summary>
+		/// The store to use when storing files
+		/// </summary>
+		ITusStore Store { get; }
+
+		/// <summary>
+		/// Callback ran when a file is completely uploaded. 
+		/// </summary>
+		Func<string, ITusStore, CancellationToken, Task> OnUploadCompleteAsync { get; }
+
+		/// <summary>
+		/// The maximum upload size to allow. Exceeding this limit will return an error to the client.
+		/// </summary>
+		int? MaxAllowedUploadSizeInBytes { get; }
+	}
+```
 
 ## Data store
 The data store is where tusdotnet stores its data and also what determines the functionality of the server running tusdotnet. There are a number of interfaces that the store can implement each giving the system more functionality. tusdotnet ships with `TusDiskStore` which is a simple store that saves data in a folder on the server disk. [Custom data stores](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store) are supported. 
