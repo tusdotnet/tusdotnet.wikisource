@@ -7,12 +7,26 @@ Install package Microsoft.Owin.Cors and modify your Startup class as below.
 ```
 public void Configuration(IAppBuilder app)
 {
-	var corsPolicy = new CorsPolicy
+	var corsPolicy = new System.Web.Cors.CorsPolicy
 	{
 		AllowAnyHeader = true,
 		AllowAnyMethod = true,
 		AllowAnyOrigin = true,
-		ExposedHeaders = { "Location" },
+		ExposedHeaders =
+		{
+			"Location",
+			"Tus-Resumable",
+			"Tus-Version",
+			"Tus-Extension",
+			"Tus-Max-Size",
+			"Tus-Checksum-Algorithm",
+			"Upload-Length",
+			"Upload-Offset",
+			"Upload-Metadata",
+			"Upload-Checksum",
+			"Upload-Concat",
+			"Upload-Expires"
+		},
 		SupportsCredentials = true
 	};
 	app.UseCors(new CorsOptions
@@ -39,7 +53,24 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
-	app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+	app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .WithExposedHeaders(
+                    "Location",
+                    "Tus-Resumable",
+                    "Tus-Version",
+                    "Tus-Extension",
+                    "Tus-Max-Size",
+                    "Tus-Checksum-Algorithm",
+                    "Upload-Length",
+                    "Upload-Offset",
+                    "Upload-Metadata",
+                    "Upload-Checksum",
+                    "Upload-Concat",
+                    "Upload-Expires")
+        );
 	app.UseTus(...);
 }
 
