@@ -2,3 +2,11 @@ If the store being used supports `ITusExpirationStore` (`TusDiskStore` does) you
 
 As stated above, tusdotnet does not automatically remove expired files so this needs to be implemented by the developer. It is recommended to add a specific endpoint to the web app that runs the appropriate method. This endpoint can then be polled by a cronjob/webjob.
 
+Example usage:
+```csharp
+
+var expiredFileIds = await tusDiskStore.GetExpiredFilesAsync(cancellationToken);
+// Do something with expiredFileIds.
+var numberOfRemovedFiles = await tusDiskStore.RemoveExpiredFilesAsync(cancellationToken);
+// Do something with numberOfRemovedFiles.
+```
