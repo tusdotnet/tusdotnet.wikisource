@@ -5,8 +5,8 @@ As stated above, tusdotnet does not automatically remove expired files so this n
 Example usage:
 ```csharp
 
-var expiredFileIds = await tusDiskStore.GetExpiredFilesAsync(cancellationToken);
+IEnumerable<string> expiredFileIds = await tusDiskStore.GetExpiredFilesAsync(cancellationToken);
 // Do something with expiredFileIds.
-var numberOfRemovedFiles = await tusDiskStore.RemoveExpiredFilesAsync(cancellationToken);
+int numberOfRemovedFiles = await tusDiskStore.RemoveExpiredFilesAsync(cancellationToken);
 // Do something with numberOfRemovedFiles.
 ```
