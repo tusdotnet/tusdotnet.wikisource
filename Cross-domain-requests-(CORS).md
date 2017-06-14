@@ -6,7 +6,7 @@ To allow a browser to upload files from a page on a different domain you will ne
 
 Install package Microsoft.Owin.Cors and modify your Startup class as below.
 
-```
+```csharp
 public void Configuration(IAppBuilder app)
 {
     var corsPolicy = new System.Web.Cors.CorsPolicy
@@ -37,7 +37,7 @@ public void Configuration(IAppBuilder app)
 
 Install package Microsoft.AspNetCore.Cors and modify your Startup class as below.
 
-```
+```csharp
 public void ConfigureServices(IServiceCollection services)
 {
 	services.AddCors();
