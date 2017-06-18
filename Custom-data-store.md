@@ -8,6 +8,7 @@ tusdotnet will automatically handle requests and add information to the Tus-Exte
 * [ITusCreationStore](#ituscreationstore) - Support for the Creation extension (creating new files)
 * [ITusReadableStore](#itusreadablestore) - Support for reading files from the store (e.g. for downloads or processing)
 * [ITusTerminationStore](#itusterminationstore) - Support for the Termination extension (deleting files)
+* [ITusExpirationStore](#itusexpirationstore) - Support for the Expiration extensions (files expire after a period of time)
 
 ## ITusStore
 Required: yes | Tus-Extension: \<none\>
@@ -177,7 +178,7 @@ public interface ITusTerminationStore
 ```
 
 ## ITusReadableStore
-Required: no | Tus-Extension \<none\>
+Required: no | Tus-Extension: \<none\>
 
 ITusReadableStore is a simple interface that is not part of the tus spec. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](https://github.com/smatsson/tusdotnet/wiki/Downloading-files) page.
 
@@ -192,5 +193,53 @@ public interface ITusReadableStore
 	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
 	/// <returns>The file or null if the file was not found</returns>
 	Task<ITusFile> GetFileAsync(string fileId, CancellationToken cancellationToken);
+}
+```
+
+#ITusExpirationStore
+Required: no | Tus-Extension: expiration
+
+This interface adds support for the expiration extension allowin the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
+
+Read more: http://tus.io/protocols/resumable-upload.html#expiration
+
+```csharp
+public interface ITusExpirationStore
+{
+	/// <summary>
+	/// Set the expiry date of the provided file. 
+	/// This method will be called once during creation if absolute expiration is used.
+	/// This method will be called once per patch request if sliding expiration is used.
+	/// </summary>
+	/// <param name="fileId">The id of the file to update the expiry date for</param>
+	/// <param name="expires">The datetime offset when the file expires</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>Task</returns>
+	Task SetExpirationAsync(string fileId, DateTimeOffset expires, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Get the expiry date of the provided file (set by <code>SetExpirationAsync</code>).
+	/// If the datetime offset returned has passed an error will be returned to the client.
+	/// If no expiry date exist for the file, this method returns null.
+	/// </summary>
+	/// <param name="fileId">The id of the file to get the expiry date for</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns></returns>
+	Task<DateTimeOffset?> GetExpirationAsync(string fileId, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Returns a list of ids of incomplete files that have expired.
+	/// This method can be used to do batch processing of incomplete, expired files before removing them.
+	/// </summary>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>A list of ids of incomplete files that have expired</returns>
+	Task<IEnumerable<string>> GetExpiredFilesAsync(CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Remove all incomplete files that have expired.
+	/// </summary>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>The number of files that were removed</returns>
+	Task<int> RemoveExpiredFilesAsync(CancellationToken cancellationToken);
 }
 ```
