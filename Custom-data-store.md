@@ -196,7 +196,7 @@ public interface ITusReadableStore
 }
 ```
 
-#ITusExpirationStore
+## ITusExpirationStore
 Required: no | Tus-Extension: expiration
 
 This interface adds support for the expiration extension allowin the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
