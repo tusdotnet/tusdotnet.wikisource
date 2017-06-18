@@ -202,6 +202,7 @@ Required: no | Tus-Extension: expiration
 This interface adds support for the expiration extension allowin the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
 
 Read more: http://tus.io/protocols/resumable-upload.html#expiration
+Read more on the wiki on how to setup cleanup of expired files: https://github.com/smatsson/tusdotnet/wiki/Removing-expired-incomplete-files
 
 ```csharp
 public interface ITusExpirationStore
