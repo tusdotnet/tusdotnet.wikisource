@@ -6,6 +6,7 @@ tusdotnet will automatically handle requests and add information to the Tus-Exte
 * [ITusChecksumStore](#ituschecksumstore) - Support for the Checksum extension (checksum verification of files)
 * [ITusConcatenationStore](#itusconcatenationstore) - Support for the Concatenation extension (merging multiple files together with a single command)
 * [ITusCreationStore](#ituscreationstore) - Support for the Creation extension (creating new files)
+* [ITusCreationDeferLength](#ituscreationdeferlengthstore) - Support for Upload-Defer-Length (sub extension of Creation)
 * [ITusReadableStore](#itusreadablestore) - Support for reading files from the store (e.g. for downloads or processing)
 * [ITusTerminationStore](#itusterminationstore) - Support for the Termination extension (deleting files)
 * [ITusExpirationStore](#itusexpirationstore) - Support for the Expiration extensions (files expire after a period of time)
@@ -154,6 +155,31 @@ public interface ITusCreationStore
 	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
 	/// <returns>The Upload-Metadata header</returns>
 	Task<string> GetUploadMetadataAsync(string fileId, CancellationToken cancellationToken);
+}
+```
+
+## ITusCreationDeferLengthStore
+Required: no | Tus-Extension: creation-defer-length
+
+*Note*: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
+
+Creation-defer-length is a sub extension of the creation extension that allows users to create files without knowing the size of the upload in advance. 
+
+*Note*: Calls to `CreateFileAsync` (`ITusCreationStore`) and `CreatePartialFileAsync` (`ITusConcatenationStore`) will be invoked with `-1` as the length of the file if this interface is implemented and the user choses to use this feature.
+
+Read more at: http://tus.io/protocols/resumable-upload.html#upload-defer-length
+
+```csharp
+public interface ITusCreationDeferLengthStore
+{
+	/// <summary>
+	/// Set the upload length (in bytes) of the provided file.
+	/// </summary>
+	/// <param name="fileId">The id of the file to set the upload length for</param>
+	/// <param name="uploadLength">The length of the upload in bytes</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>Task</returns>
+	Task SetUploadLengthAsync(string fileId, long uploadLength, CancellationToken cancellationToken);
 }
 ```
 
