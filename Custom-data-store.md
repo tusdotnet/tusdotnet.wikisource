@@ -1,7 +1,10 @@
-tusdotnet ships with a single store, the TusDiskStore, which saves files in a directory on disk. You can implement your own store by implementing one or more of the following interfaces. 
+tusdotnet ships with a single store, the TusDiskStore, which saves files in a directory on disk. You can implement your own store by implementing one or more of the following interfaces. tusdotnet will automatically handle requests and add information to the Tus-Extension header depending on what interfaces are implemented by the store used for the request.
 
-tusdotnet will automatically handle requests and add information to the Tus-Extension header depending on what interfaces are implemented.
+Please note that some methods might be called multiple times during request execution. It is up to the store to properly cache data.
 
+The most common interfaces to implement are [ITusStore](#itusstore), [ITusCreationStore](#ituscreationstore) and [ITusReadableStore](#itusreadablestore). This will allow the store to create and upload files and to read the files back for processing or downloading.
+
+# Interfaces
 * [ITusStore](#itusstore)- Support for the core protocol
 * [ITusChecksumStore](#ituschecksumstore) - Support for the Checksum extension (checksum verification of files)
 * [ITusConcatenationStore](#itusconcatenationstore) - Support for the Concatenation extension (merging multiple files together with a single command)
