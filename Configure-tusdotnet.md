@@ -1,4 +1,10 @@
-tusdotnet is simply configured by running `UseTus(context => ...)` on the app builder. The configuration consists of a single ITusConfiguration instance which contains the following properties:
+tusdotnet is simply configured by running
+
+```csharp
+app.UseTus(context => new DefaultTusConfiguration {... });
+```
+
+The configuration consists of a single ITusConfiguration instance which contains the following properties:
 
 ```csharp
 /// <summary>
