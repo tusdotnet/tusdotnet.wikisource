@@ -1,10 +1,13 @@
 tusdotnet is simply configured by running `UseTus(context => ...)` on the app builder. The configuration consists of a single ITusConfiguration instance which contains the following properties:
 
 ```csharp
+/// <summary>
+/// Represents the configuration used by tusdotnet.
+/// </summary>
 public interface ITusConfiguration
 {
 	/// <summary>
-	/// The url path to listen for uploads on, e.g. "/files"
+	/// The url path to listen for uploads on (e.g. "/files").
 	/// If the site is located in a subpath (e.g. https://example.org/mysite) it must also be included (e.g. /mysite/files) 
 	/// </summary>
 	string UrlPath { get; }
@@ -26,6 +29,15 @@ public interface ITusConfiguration
 	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
 	/// </summary>
 	int? MaxAllowedUploadSizeInBytes { get; }
+
+	/// <summary>
+	/// Set an expiration time where incomplete files can no longer be updated.
+	/// This value can either be <code>AbsoluteExpiration</code> or <code>SlidingExpiration</code>.
+	/// Absolute expiration will be saved per file when the file is created.
+	/// Sliding expiration will be saved per file when the file is created and updated on each time the file is updated.
+	/// Setting this property to null will disable file expiration.
+	/// </summary>
+	ExpirationBase Expiration { get; }
 }
 ```
 
@@ -35,4 +47,4 @@ Depending on what store is used some configuration might also be needed for the 
 Store = new TusDiskStore(@"C:\tusfiles\", true)
 ```
 
-In the above case `C:\tusfiles\` is where all files will be saved and true indicates that partial files should be deleted. The default value is false so that no files are unexpectedly deleted. If unsure, or not using the concatenation extension, leave it as false. See [Custom data store](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store#itusconcatenationstore) for more details.
+In the above case `C:\tusfiles\` is where all files will be saved and true indicates that partial files should be deleted. The default value is false so that no files are unexpectedly deleted. If unsure, or not using the concatenation extension, leave it as false. See [Custom data store -> ITusConcatenationStore](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store#itusconcatenationstore) for more details.
