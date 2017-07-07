@@ -18,5 +18,5 @@ Here you can find the most common information that we think is necessary to use 
 **Technical**
 * [Architecture and overall concepts](https://github.com/tusdotnet/tusdotnet/wiki/Architecture-and-overall-concepts)
 
-**Troubleshootin**
+**Troubleshooting**
 * [Troubleshoot: "'IApplicationBuilder' does not contain a definition for 'UseTus'" in ASP.NET Core](https://github.com/tusdotnet/tusdotnet/wiki/Troubleshoot:-%22'IApplicationBuilder'-does-not-contain-a-definition-for-'UseTus'%22-in-ASP.NET-Core)
