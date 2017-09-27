@@ -4,6 +4,7 @@
 * [Cross Domain Requests (CORS)](https://github.com/smatsson/tusdotnet/wiki/Cross-domain-requests-(CORS))
 
 **Using**
+* [Validating metadata before creating a file](https://github.com/tusdotnet/tusdotnet/wiki/Validate-metadata-before-creating-a-file)
 * [Processing a completed upload](https://github.com/smatsson/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
 * [Downloading files](https://github.com/smatsson/tusdotnet/wiki/Downloading-files)
 * [Removing expired incomplete files](https://github.com/smatsson/tusdotnet/wiki/Removing-expired-incomplete-files)
