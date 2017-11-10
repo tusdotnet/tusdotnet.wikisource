@@ -5,19 +5,19 @@ Calling FailRequest on the BeforeDeleteContext passed to the callback will rejec
 ```csharp
 app.UseTus(context => new DefaultTusConfiguration
 {
-	UrlPath = "/files",
-	Store = new TusDiskStore(@"C:\tusfiles\"),
-	Events = new Events
-	{
-		OnBeforeDeleteAsync = ctx =>
-		{
-			if(!SomeBusinessLogic())
-			{
-				ctx.FailRequest($"Cannot delete {ctx.FileId} due to business logic");
-			}
-			
-			return Task.CompletedTask;
-		}
-	}
+    UrlPath = "/files",
+    Store = new TusDiskStore(@"C:\tusfiles\"),
+    Events = new Events
+    {
+        OnBeforeDeleteAsync = ctx =>
+        {
+            if(!SomeBusinessLogic())
+            {
+                ctx.FailRequest($"Cannot delete {ctx.FileId} due to business logic");
+            }
+            
+            return Task.CompletedTask;
+        }
+    }
 });
 ```
