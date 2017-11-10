@@ -12,5 +12,6 @@ app.UseTus(context => new DefaultTusConfiguration
 			logger.LogInformation($"Created file {ctx.FileId} using {ctx.Store.GetType().FullName}");
 			return Task.CompletedTask;
 		}
+	}
 });
 ```
