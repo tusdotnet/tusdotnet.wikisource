@@ -1,3 +1,9 @@
+tusdotnet 2.0 has added support for validating a file before it is created using the [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event) event.
+
+---
+
+**_NOTE that this solution is obsolete for tusdotnet 2.x (see above)_**
+
 In tusdotnet 1.x there is no built in support for validating metadata when creating a new file. The feature has been proposed for tusdotnet 2.x but there is currently no ETA on this release.
 
 In the meanwhile one can add this behavior by adding an extra middleware just before the call to `app.UseTus` as below.
