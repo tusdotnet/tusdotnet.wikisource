@@ -1,3 +1,5 @@
+*NOTE* This issue will be fixed in the upcoming 2.1 release (no ETA yet).
+
 # Error message in Visual Studio
 
 ```
