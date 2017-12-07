@@ -1,4 +1,4 @@
-*NOTE* This issue will be fixed in the upcoming 2.1 release (no ETA yet).
+*NOTE* This issue will be fixed in the upcoming [2.1 release](https://github.com/tusdotnet/tusdotnet/milestone/2).
 
 # Error message in Visual Studio
 
