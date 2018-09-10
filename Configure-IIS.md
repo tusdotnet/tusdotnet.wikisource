@@ -2,7 +2,7 @@ If you run tusdotnet on IIS you will need to configure the Web.config file to al
 If this is not done IIS will buffer the entire request and then return a 404. 
 
 The default value is 4 MB.
-Roughly 2 GB (2147483647 bytes) seems to be the max value before IIS once again returns a 404.
+Roughly 2 GB (2147483647 bytes) seems to be the max value before IIS once again returns a 404. *Note* that you can still sender bigger files using tusdotnet by specifying a `chunkSize` in the client (if the client supports it).
 
 # ASP.NET 4.x
 
