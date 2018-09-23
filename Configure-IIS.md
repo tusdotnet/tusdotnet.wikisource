@@ -6,7 +6,7 @@ Roughly 2 GB (2147483647 bytes) seems to be the max value before IIS once again 
 
 Note that you can still send bigger files using tusdotnet by specifying a `chunkSize` in the client that is smaller than 2147483647 bytes.
 
-# ASP.NET 4.x
+# OWIN
 
 You need to add two things:
 * maxRequestLenght to system.web/httpRuntime (expressed in KB)
