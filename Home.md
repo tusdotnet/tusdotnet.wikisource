@@ -8,7 +8,7 @@ Here you can find the most common information that we think is necessary to use 
 * [Cross Domain Requests (CORS)](https://github.com/tusdotnet/tusdotnet/wiki/Cross-domain-requests-(CORS))
 
 **Usage**
-* [Validating metadata before creating a file](https://github.com/tusdotnet/tusdotnet/wiki/Validate-metadata-before-creating-a-file)
+* [Validating metadata before creating a file](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
 * [Processing a completed upload](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
 * [Downloading files](https://github.com/tusdotnet/tusdotnet/wiki/Downloading-files)
 * [Removing expired incomplete files](https://github.com/tusdotnet/tusdotnet/wiki/Removing-expired-incomplete-files)
