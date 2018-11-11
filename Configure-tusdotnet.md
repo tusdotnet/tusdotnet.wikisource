@@ -4,7 +4,9 @@ tusdotnet is simply configured by running
 app.UseTus(context => new DefaultTusConfiguration {... });
 ```
 
-The configuration consists of a single DefaultTusConfiguration instance which contains the following properties:
+The provided factory (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext`/`IOwinRequest`.
+
+The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties:
 
 ```csharp
 public class DefaultTusConfiguration
