@@ -13,11 +13,16 @@ Here you can find the most common information that we think is necessary to use 
 * [Downloading files](https://github.com/tusdotnet/tusdotnet/wiki/Downloading-files)
 * [Removing expired incomplete files](https://github.com/tusdotnet/tusdotnet/wiki/Removing-expired-incomplete-files)
 
+**Events**
+* [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
+* [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
+* [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
+* [OnBeforeDelete](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeDelete-event)
+* [OnDeleteComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnDeleteComplete-event)
+
+
 **Customizing**
 * [Custom data store](https://github.com/tusdotnet/tusdotnet/wiki/Custom-data-store)
 
 **Technical**
 * [Architecture and overall concepts](https://github.com/tusdotnet/tusdotnet/wiki/Architecture-and-overall-concepts)
-
-**Troubleshooting**
-* [Troubleshoot: "'IApplicationBuilder' does not contain a definition for 'UseTus'" in ASP.NET Core](https://github.com/tusdotnet/tusdotnet/wiki/Troubleshoot:-%22'IApplicationBuilder'-does-not-contain-a-definition-for-'UseTus'%22-in-ASP.NET-Core)
