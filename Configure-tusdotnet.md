@@ -4,37 +4,32 @@ tusdotnet is simply configured by running
 app.UseTus(context => new DefaultTusConfiguration {... });
 ```
 
-The configuration consists of a single ITusConfiguration instance which contains the following properties:
+The configuration consists of a single DefaultTusConfiguration instance which contains the following properties:
 
 ```csharp
-/// <summary>
-/// Represents the configuration used by tusdotnet.
-/// </summary>
-public interface ITusConfiguration
+public class DefaultTusConfiguration
 {
 	/// <summary>
 	/// The url path to listen for uploads on (e.g. "/files").
 	/// If the site is located in a subpath (e.g. https://example.org/mysite) it must also be included (e.g. /mysite/files) 
 	/// </summary>
-	string UrlPath { get; }
+	public virtual string UrlPath { get; set; }
 
 	/// <summary>
-	/// The store to use when storing files
+	/// The store to use when storing files.
 	/// </summary>
-	ITusStore Store { get; }
+	public virtual ITusStore Store { get; set; }
 
 	/// <summary>
-	/// Callback ran when a file is completely uploaded. 
-	/// This callback is called only once after the last bytes have been written to the store.
-	/// It will not be called for any subsequent upload requests for already completed files.
+	/// Callbacks to run during different stages of the tusdotnet pipeline.
 	/// </summary>
-	Func<string, ITusStore, CancellationToken, Task> OnUploadCompleteAsync { get; }
+	public virtual Events Events { get; set; }
 
 	/// <summary>
 	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
 	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
 	/// </summary>
-	int? MaxAllowedUploadSizeInBytes { get; }
+	public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
 
 	/// <summary>
 	/// Set an expiration time where incomplete files can no longer be updated.
@@ -43,14 +38,14 @@ public interface ITusConfiguration
 	/// Sliding expiration will be saved per file when the file is created and updated on each time the file is updated.
 	/// Setting this property to null will disable file expiration.
 	/// </summary>
-	ExpirationBase Expiration { get; }
+	public virtual ExpirationBase Expiration { get; set; }
 }
 ```
 
 Depending on what store is used some configuration might also be needed for the store. The disk store that ships with tusdotnet requires a directory path and whether or not it should delete "partial" files on concatenation. 
 
 ```csharp
-Store = new TusDiskStore(@"C:\tusfiles\", true)
+Store = new TusDiskStore(@"C:\tusfiles\", deletePartialFilesOnConcat: true)
 ```
 
-In the above case `C:\tusfiles\` is where all files will be saved and true indicates that partial files should be deleted. The default value is false so that no files are unexpectedly deleted. If unsure, or not using the concatenation extension, leave it as false. See [Custom data store -> ITusConcatenationStore](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store#itusconcatenationstore) for more details.
+In the above case `C:\tusfiles\` is where all files will be saved and `deletePartialFilesOnConcat: true` indicates that partial files should be deleted once a final file has been created (only used by the concatenation extension). The default value is false so that no files are unexpectedly deleted. If unsure, or not using the concatenation extension, leave it as false. See [Custom data store -> ITusConcatenationStore](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store#itusconcatenationstore) for more details.
