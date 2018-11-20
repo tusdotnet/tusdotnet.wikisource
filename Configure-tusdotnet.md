@@ -27,11 +27,19 @@ public class DefaultTusConfiguration
 	/// </summary>
 	public virtual Events Events { get; set; }
 
-	/// <summary>
-	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
-	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
-	/// </summary>
-	public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
+        /// <summary>
+        /// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
+        /// Set to null to allow any size. The size might still be restricted by the web server or operating system.
+        /// This property will be preceded by <see cref="MaxAllowedUploadSizeInBytesLong" />.
+        /// </summary>
+        public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
+
+        /// <summary>
+        /// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
+        /// Set to null to allow any size. The size might still be restricted by the web server or operating system.
+        /// This property will take precedence over <see cref="MaxAllowedUploadSizeInBytes" />.
+        /// </summary>
+        public virtual long? MaxAllowedUploadSizeInBytesLong { get; set; }
 
 	/// <summary>
 	/// Set an expiration time where incomplete files can no longer be updated.
