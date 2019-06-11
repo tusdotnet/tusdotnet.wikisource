@@ -14,6 +14,7 @@ Here you can find the most common information that we think is necessary to use 
 * [Removing expired incomplete files](https://github.com/tusdotnet/tusdotnet/wiki/Removing-expired-incomplete-files)
 
 **Events**
+* [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)
 * [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
 * [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
 * [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
