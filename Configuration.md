@@ -2,6 +2,7 @@
 [Basic configuration of tusdotnet](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdotnet)
 
 Events:
+* [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)
 * [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
 * [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
 * [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
