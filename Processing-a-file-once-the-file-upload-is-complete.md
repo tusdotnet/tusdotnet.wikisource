@@ -1,20 +1,20 @@
 tusdotnet supports processing of a file once it has been completed using the `OnFileCompleteAsync` callback.
 
 ```csharp
-app.UseTus(request => new DefaultTusConfiguration
+app.UseTus(httpContext => new DefaultTusConfiguration
 {
 	Store = new TusDiskStore(@"C:\tusfiles\"),
 	UrlPath = "/files",
 	Events = new Events
 	{
-		OnFileCompleteAsync = async ctx =>
+		OnFileCompleteAsync = async eventContext =>
 		{
-			// ctx.FileId is the id of the file that was uploaded.
-			// ctx.Store is the data store that was used (in this case an instance of the TusDiskStore)
+			// eventContext.FileId is the id of the file that was uploaded.
+			// eventContext.Store is the data store that was used (in this case an instance of the TusDiskStore)
 
 			// A normal use case here would be to read the file and do some processing on it.
-			var file = await ((ITusReadableStore)ctx.Store).GetFileAsync(ctx.FileId, ctx.CancellationToken);
-			var result = await DoSomeProcessing(file, ctx.CancellationToken);
+			ITusFile file = await eventContext.GetFileAsync();
+			var result = await DoSomeProcessing(file, eventContext.CancellationToken);
 
 			if (!result.Success)
 			{
