@@ -50,7 +50,7 @@ app.Use(async (context, next) =>
         }
         else
         {
-                await _next(context);
+                await _next();
         }
 });
 ```
