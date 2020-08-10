@@ -3,9 +3,9 @@ Since the tus spec does not contain downloading files tusdotnet will automatical
 The following example requires that the data store implements `ITusReadableStore` (`TusDiskStore` does). If it does not one would have to figure out where the files are stored and read them in some other way.
 
 ```csharp
-🙏app.Use(async (context, next) =>
+app.Use(async (context, next) =>
 {
-        if (context.Request.Path.StartsWithSegments(new PathString("/api/files"), StringComparison.Ordinal, 
+        if (context.Request.Path.StartsWithSegments(new PathString("/files"), StringComparison.Ordinal, 
                 out PathString remaining))
         {
                 // Try to get a file id e.g. /files/<fileId>
@@ -37,13 +37,20 @@ The following example requires that the data store implements `ITusReadableStore
                                 context.Response.Headers.Add("Content-Disposition", new[] { $"attachment; filename=\"{name}\"" });
                         }
                 
-                        await fileStream.CopyToAsync(context.Response.Body, context.RequestAborted);
+                        using (var fileStream = await file.GetContentAsync(context.RequestAborted))
+                        {
+                                await fileStream.CopyToAsync(context.Response.Body, context.RequestAborted);
+                        }
                 }
                 else
                 {
                         // Call next handler in pipeline if it's something else
                         await next();
                 }
+        }
+        else
+        {
+                await _next(context);
         }
 });
 ```
