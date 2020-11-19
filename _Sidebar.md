@@ -11,6 +11,8 @@
 
 **Customize**
 * [Custom data store](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store)
+* [Custom file id provider](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Id-Provider)
+* [Custom file lock](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Lock)
 
 **Technical**
 * [Architecture and overall concepts](https://github.com/smatsson/tusdotnet/wiki/Architecture-and-overall-concepts)
