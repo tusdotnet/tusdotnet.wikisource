@@ -24,6 +24,8 @@ Here you can find the most common information that we think is necessary to use 
 
 **Customizing**
 * [Custom data store](https://github.com/tusdotnet/tusdotnet/wiki/Custom-data-store)
+* [Custom file id provider](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Id-Provider)
+* [Custom file lock](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Lock)
 
 **Technical**
 * [Architecture and overall concepts](https://github.com/tusdotnet/tusdotnet/wiki/Architecture-and-overall-concepts)
