@@ -4,11 +4,14 @@ tusdotnet is simply configured by running
 app.UseTus(context => new DefaultTusConfiguration {... });
 ```
 
-The provided factory (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext`/`IOwinRequest`.
+The provided factory (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`.
 
 The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties:
 
 ```csharp
+/// <summary>
+/// The default tusdotnet configuration.
+/// </summary>
 public class DefaultTusConfiguration
 {
 	/// <summary>
@@ -23,23 +26,29 @@ public class DefaultTusConfiguration
 	public virtual ITusStore Store { get; set; }
 
 	/// <summary>
+	/// Callback to provide a file locking mechanism to prevent a file
+	/// from being accessed while the file is still in use
+	/// </summary>
+	public virtual Func<string, ITusFileLock> AquireFileLock { get; set; }
+
+	/// <summary>
 	/// Callbacks to run during different stages of the tusdotnet pipeline.
 	/// </summary>
 	public virtual Events Events { get; set; }
 
-        /// <summary>
-        /// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
-        /// Set to null to allow any size. The size might still be restricted by the web server or operating system.
-        /// This property will be preceded by <see cref="MaxAllowedUploadSizeInBytesLong" />.
-        /// </summary>
-        public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
+	/// <summary>
+	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
+	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
+	/// This property will be preceded by <see cref="MaxAllowedUploadSizeInBytesLong" />.
+	/// </summary>
+	public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
 
-        /// <summary>
-        /// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
-        /// Set to null to allow any size. The size might still be restricted by the web server or operating system.
-        /// This property will take precedence over <see cref="MaxAllowedUploadSizeInBytes" />.
-        /// </summary>
-        public virtual long? MaxAllowedUploadSizeInBytesLong { get; set; }
+	/// <summary>
+	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
+	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
+	/// This property will take precedence over <see cref="MaxAllowedUploadSizeInBytes" />.
+	/// </summary>
+	public virtual long? MaxAllowedUploadSizeInBytesLong { get; set; }
 
 	/// <summary>
 	/// Set an expiration time where incomplete files can no longer be updated.
@@ -49,13 +58,12 @@ public class DefaultTusConfiguration
 	/// Setting this property to null will disable file expiration.
 	/// </summary>
 	public virtual ExpirationBase Expiration { get; set; }
-}
+
+	/// <summary>
+	/// Set the strategy to use when parsing metadata. Defaults to <see cref="MetadataParsingStrategy.AllowEmptyValues"/> for better compatibility with tus clients.
+	/// Change to <see cref="MetadataParsingStrategy.Original"/> to use the old format.
+	/// </summary>
+	public virtual MetadataParsingStrategy MetadataParsingStrategy { get; set; }
 ```
 
-Depending on what store is used some configuration might also be needed for the store. The disk store that ships with tusdotnet requires a directory path and whether or not it should delete "partial" files on concatenation. 
-
-```csharp
-Store = new TusDiskStore(@"C:\tusfiles\", deletePartialFilesOnConcat: true)
-```
-
-In the above case `C:\tusfiles\` is where all files will be saved and `deletePartialFilesOnConcat: true` indicates that partial files should be deleted once a final file has been created (only used by the concatenation extension). The default value is false so that no files are unexpectedly deleted. If unsure, or not using the concatenation extension, leave it as false. See [Custom data store -> ITusConcatenationStore](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store#itusconcatenationstore) for more details.
+Depending on what store is used some configuration might also be needed for the store.
