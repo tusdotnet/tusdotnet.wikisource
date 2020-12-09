@@ -1,6 +1,6 @@
 # Deleting processed files when upload is complete
 
-Tus dotnet does not automatically delete files after they are processed, it has to be done manually.
+tusdotnet does not automatically delete files after they are processed, it has to be done manually.
 
 When using `TusDiskStore`, it implements `ITusTerminationStore` which allows deleting files.
 
