@@ -26,10 +26,10 @@ public class DefaultTusConfiguration
 	public virtual ITusStore Store { get; set; }
 
 	/// <summary>
-	/// Callback to provide a file locking mechanism to prevent a file
-	/// from being accessed while the file is still in use
+	/// Lock provider to use when locking to prevent files from being accessed while the file is still in use.
+	/// Defaults to using in-memory locks.
 	/// </summary>
-	public virtual Func<string, ITusFileLock> AquireFileLock { get; set; }
+	public virtual ITusFileLockProvider FileLockProvider { get; set; }
 
 	/// <summary>
 	/// Callbacks to run during different stages of the tusdotnet pipeline.

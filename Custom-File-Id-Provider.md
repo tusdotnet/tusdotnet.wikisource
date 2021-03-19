@@ -1,4 +1,4 @@
-`TusDiskStore` uses file id providers upon creating files to generate valid file ids. The default file id provider is `TusGuidProvider` but you can use a different file id provider by passing it to the constructor of `TusDiskStore`. Tusdotnet is shipped with  the following file id providers: 
+`TusDiskStore` uses file id providers upon creating files to generate valid file ids. The default file id provider is `TusGuidProvider` but you can use a different file id provider by passing it to the constructor of `TusDiskStore`. tusdotnet is shipped with  the following file id providers: 
 
  - `TusGuidProvider` generates GUIDs (example id: `def1853a4a72464eb8b0d357c4f6e8a5`, using guildFormat = "n")
  - `TusBase64IdProvider`: generates base64 ids (example id: `KjJA5IoF2Bdi58B7KK5pRw`, using byteLength = 16)
