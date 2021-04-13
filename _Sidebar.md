@@ -16,6 +16,3 @@
 
 **Technical**
 * [Architecture and overall concepts](https://github.com/smatsson/tusdotnet/wiki/Architecture-and-overall-concepts)
-
-**Troubleshooting**
-* [Troubleshoot: "'IApplicationBuilder' does not contain a definition for 'UseTus'" in ASP.NET Core](https://github.com/smatsson/tusdotnet/wiki/Troubleshoot:-%22'IApplicationBuilder'-does-not-contain-a-definition-for-'UseTus'%22-in-ASP.NET-Core)
