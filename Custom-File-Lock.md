@@ -1,7 +1,9 @@
-tusdotnet should not write to files that are already in use. To prevent this, tusdotnet uses the a file locking mechanism. In certain situations it can be useful to replace this mechanism with your own implementation.
+tusdotnet should not write to files that are already in use. To prevent this, tusdotnet uses the a file locking mechanism using either in-memory locks (`tusdotnet.FileLocks.InMemoryFileLock`) or on disk locks (`tusdotnet.FileLocks.DiskFileLock`). As default tusdotnet will use in-memory locks. 
+
+In certain situations it can be useful to replace this mechanism with your own implementation.
 
 ```csharp
-public sealed class CustomFileLock : ITusFileLock
+public sealed class CustomFileLock : tusdotnet.Interfaces.ITusFileLock
 {
     private bool _hasLock;
     private string _fileId;
@@ -22,7 +24,7 @@ public sealed class CustomFileLock : ITusFileLock
     /// <returns>True if the file was locked or false if the file was already locked by another call.</returns>
     public async Task<bool> Lock()
     {
-        // lock file and set _hasLock
+        // lock file and set and return _hasLock
     }
 
     /// <summary>
@@ -33,10 +35,18 @@ public sealed class CustomFileLock : ITusFileLock
         // release file lock is the lock was aquired in the Lock call
     }
 }
+
+public sealed class CustomFileLockProvider : tusdotnet.Interfaces.ITusFileLockProvider
+{
+    public Task<ITusFileLock> AquireLock(string fileId)
+    {
+        return new CustomFileLock(fileId);
+    }
+}
 ```
 
 Use the following option in `DefaultTusConfiguration` to change the file lock to the custom implementation:
 
 ```csharp
-AquireFileLock = (fileId) => new CustomFileLock(fileId);
+FileLockProvider = new CustomFileLockProvider();
 ```
