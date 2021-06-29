@@ -13,6 +13,9 @@ app.UseTus(httpContext => new DefaultTusConfiguration
         {
             if (!eventContext.HttpContext.User.Identity.IsAuthenticated) 
             {
+                // Note: ASP.NET Core will automatically authenticate the user using the default authentication scheme.
+                // If this is not the scheme you wish to use, call AuthenticationHttpContextExtensions.AuthenticateAsync 
+                // here to authenticate the current request using your preferred scheme.
                 eventContext.FailRequest(HttpStatusCode.Unauthorized);
                 return Task.CompletedTask;
             }
