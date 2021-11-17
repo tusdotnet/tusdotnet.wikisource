@@ -51,6 +51,12 @@ public class DefaultTusConfiguration
 	public virtual long? MaxAllowedUploadSizeInBytesLong { get; set; }
 
 	/// <summary>
+	/// Use the incoming request's PipeReader instead of the stream to read data from the client.
+	/// This is only available on .NET Core 3.1 or later and if the store supports it through the ITusPipelineStore interface.
+	/// </summary>
+	public virtual bool UsePipelinesIfAvailable { get; set; }
+
+	/// <summary>
 	/// Set an expiration time where incomplete files can no longer be updated.
 	/// This value can either be <code>AbsoluteExpiration</code> or <code>SlidingExpiration</code>.
 	/// Absolute expiration will be saved per file when the file is created.

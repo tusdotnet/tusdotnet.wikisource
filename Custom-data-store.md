@@ -5,7 +5,8 @@ Please note that some methods might be called multiple times during request exec
 The most common interfaces to implement are [ITusStore](#itusstore), [ITusCreationStore](#ituscreationstore) and [ITusReadableStore](#itusreadablestore). This will allow the store to create and upload files and to read the files back for processing or downloading.
 
 # Interfaces
-* [ITusStore](#itusstore)- Support for the core protocol
+* [ITusStore](#itusstore) - Support for the core protocol
+* [ITusPipelineStore](#ituspipelinestore) - Support for the core protocol when using System.IO.Pipelines instead of System.IO.Stream for reading data
 * [ITusChecksumStore](#ituschecksumstore) - Support for the Checksum extension (checksum verification of files)
 * [ITusConcatenationStore](#itusconcatenationstore) - Support for the Concatenation extension (merging multiple files together with a single command)
 * [ITusCreationStore](#ituscreationstore) - Support for the Creation extension (creating new files)
@@ -17,7 +18,9 @@ The most common interfaces to implement are [ITusStore](#itusstore), [ITusCreati
 ## ITusStore
 Required: yes | Tus-Extension: \<none\>
 
-This is the interface for the core protocol. It must be implemented for the store to work. 
+This is the interface for the core protocol. It must be implemented for the store to work.
+
+NOTE: It is recommended to implement [ITusPipelineStore](#ituspipelinestore) instead of this interface if running on modern platforms (.NET Core 3.1 or later).
 
 Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
 
@@ -59,6 +62,30 @@ public interface ITusStore
 	/// <returns>The size of the current file</returns>
 	Task<long> GetUploadOffsetAsync(string fileId, CancellationToken cancellationToken);
 }
+```
+
+## ITusPipelineStore
+Required: no | Tus-Extension: \<none\>
+
+This is the interface for the core protocol when using System.IO.Pipelines for reading. Using System.IO.Pipelines increases performance in regard to CPU usage, memory consumption and throughput. This interface inherits from `ITusStore`. It is recommended to implement this interface instead of `ITusStore` if running on modern platforms (.NET Core 3.1 or later).
+
+Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
+
+```csharp
+public interface ITusPipelineStore : ITusStore
+{
+	/// <summary>
+	/// Write data to the file using the provided pipe reader.
+	/// The implementation must throw <exception cref="TusStoreException"></exception> 
+	/// if the pipe readers length exceeds the upload length of the file.
+	/// </summary>
+	/// <param name="fileId">The id of the file to write</param>
+	/// <param name="pipeReader">The request input pipe reader from the client</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>The number of bytes written</returns>
+	Task<long> AppendDataAsync(string fileId, PipeReader pipeReader, CancellationToken cancellationToken);
+}
+
 ```
 
 ## ITusChecksumStore
