@@ -1,6 +1,6 @@
 This page describes how to configure Kestrel if not running behind a reverse proxy such as IIS or Nginx.
 
-Kestrel does not by default have a request timeout (https://github.com/aspnet/KestrelHttpServer/pull/485#discussion_r55264843, https://github.com/dotnet/aspnetcore/issues/10079#issuecomment-490519795) and thus does not cancel the request cancellation token if the client disconnects abruptly. As tusdotnet relies on this information to handle client disconnects it might end up in locked files, unreleased resources etc.
+Kestrel does not by default have a request timeout <sup>[[1](https://github.com/aspnet/KestrelHttpServer/pull/485#discussion_r55264843), [2](https://github.com/dotnet/aspnetcore/issues/10079#issuecomment-490519795)]</sup> and thus does not cancel the request cancellation token if the client disconnects abruptly. As tusdotnet relies on this information to handle client disconnects it might end up in locked files, unreleased resources etc.
 
 To setup a request timeout middleware one can use the following code.
 
