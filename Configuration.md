@@ -9,8 +9,9 @@ Events:
 * [OnBeforeDelete](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeDelete-event)
 * [OnDeleteComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnDeleteComplete-event)
 
-## Configure IIS
-[How to configure IIS](https://github.com/tusdotnet/tusdotnet/wiki/Configure-IIS)
+## Configure the webserver
+* [Configure IIS](https://github.com/tusdotnet/tusdotnet/wiki/Configure-IIS)
+* [Configure Kestrel](https://github.com/tusdotnet/tusdotnet/wiki/Configure-Kestrel)
 
 ## Cross domain requests / CORS
 [How to configure CORS](https://github.com/tusdotnet/tusdotnet/wiki/Cross-domain-requests-(CORS))

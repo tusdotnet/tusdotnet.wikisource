@@ -1,0 +1,33 @@
+This page describes how to configure Kestrel if not running behind a reverse proxy such as IIS or Nginx.
+
+Kestrel does not by default have a request timeout (https://github.com/aspnet/KestrelHttpServer/pull/485#discussion_r55264843, https://github.com/dotnet/aspnetcore/issues/10079#issuecomment-490519795) and thus does not cancel the request cancellation token if the client disconnects abruptly. As tusdotnet relies on this information to handle client disconnects it might end up in locked files, unreleased resources etc.
+
+To setup a request timeout middleware one can use the following code.
+
+> :information_source: The request timeout middleware is only needed when running directly on Kestrel. In other circumstances the reverse proxy will handle the request timeout and notify tusdotnet that the client has disconnected.
+
+```csharp
+app.Use(async (httpContext, next) =>
+{
+    // Specify timeout, in this case 60 seconds.
+    var requestTimeout = TimeSpan.FromSeconds(60);
+
+    // Add timeout to the current request cancellation token. 
+    // If the client does a clean disconnect the cancellation token will also be flagged as cancelled.
+    using var timoutCts = CancellationTokenSource.CreateLinkedTokenSource(httpContext.RequestAborted);
+
+    // Make sure to cancel the cancellation token after the timeout. 
+    // Once this timeout has been reached, tusdotnet will cancel all pending reads 
+    // from the client and save the parts of the file has been received so far.
+    timoutCts.CancelAfter(requestTimeout);
+
+    // Replace the request cancellation token with our token that supports timeouts.
+    httpContext.RequestAborted = timeoutCts.Token;
+
+    // Continue the execution chain.
+    await next();
+});
+
+// The usual setup of tusdotnet.
+app.UseTus(httpContext => ...);
+```
