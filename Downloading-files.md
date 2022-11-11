@@ -3,6 +3,46 @@ Since the tus spec does not contain downloading files tusdotnet will automatical
 The following example requires that the data store implements `ITusReadableStore` (`TusDiskStore` does). If it does not one would have to figure out where the files are stored and read them in some other way.
 
 ```csharp
+app.MapGet("/files/{fileId}", async httpContext =>
+{
+    var fileId = (string)httpContext.GetRouteValue("fileId")!;
+    var store = new tusdotnet.Stores.TusDiskStore(@"C:\tusfiles");
+
+    var file = await store.GetFileAsync(fileId, httpContext.RequestAborted);
+
+    if (file == null)
+    {
+        httpContext.Response.StatusCode = 404;
+        return;
+    }
+
+    var fileStream = await file.GetContentAsync(httpContext.RequestAborted);
+    var metadata = await file.GetMetadataAsync(httpContext.RequestAborted);
+
+    // The tus protocol does not specify any required metadata.
+    // "contentType" is metadata that is specific to this domain and is not required.
+    httpContext.Response.ContentType = metadata.ContainsKey("contentType")
+            ? metadata["contentType"].GetString(System.Text.Encoding.UTF8)
+            : "application/octet-stream";
+
+    if (metadata.ContainsKey("name"))
+    {
+        var name = metadata["name"].GetString(System.Text.Encoding.UTF8);
+        httpContext.Response.Headers.Add("Content-Disposition", new[] { $"attachment; filename=\"{name}\"" });
+    }
+
+    using (var fileStream = await file.GetContentAsync(httpContext.RequestAborted))
+    {
+        await fileStream.CopyToAsync(httpContext.Response.Body, httpContext.RequestAborted);
+    }
+});
+```
+
+
+<details>
+<summary><h3>On older frameworks that does not support endpoint routing</h3></summary>
+
+```csharp
 app.Use(async (context, next) =>
 {
         if (context.Request.Path.StartsWithSegments(new PathString("/files"), StringComparison.Ordinal, 
@@ -54,3 +94,5 @@ app.Use(async (context, next) =>
         }
 });
 ```
+
+</details>
