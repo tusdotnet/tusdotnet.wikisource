@@ -1,22 +1,25 @@
-tusdotnet is simply configured by running
+tusdotnet is simply configured by running either `UseTus` or `MapTus` on your application builder, depending on if you like to use endpoint routing or not (see differences further down)
 
 ```csharp
 app.UseTus(context => new DefaultTusConfiguration {... });
+
+// OR use endpoint routing (only available for .NET Core 3.1 and later)
+
+app.MapTus("/files", context => new DefaultTusConfiguration {... });
+
 ```
 
-The provided factory (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`.
+The "configuration factory" (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`.
 
-The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties:
+The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties. Return null from the factory to disable tusdotnet for the current request.
 
 ```csharp
-/// <summary>
-/// The default tusdotnet configuration.
-/// </summary>
 public class DefaultTusConfiguration
 {
 	/// <summary>
 	/// The url path to listen for uploads on (e.g. "/files").
-	/// If the site is located in a subpath (e.g. https://example.org/mysite) it must also be included (e.g. /mysite/files) 
+	/// If the site is located in a subpath (e.g. https://example.org/mysite) it must also be included (e.g. /mysite/files)
+	/// This property is not used when using endpoint routing.
 	/// </summary>
 	public virtual string UrlPath { get; set; }
 
@@ -39,14 +42,6 @@ public class DefaultTusConfiguration
 	/// <summary>
 	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
 	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
-	/// This property will be preceded by <see cref="MaxAllowedUploadSizeInBytesLong" />.
-	/// </summary>
-	public virtual int? MaxAllowedUploadSizeInBytes { get; set; }
-
-	/// <summary>
-	/// The maximum upload size to allow. Exceeding this limit will return a "413 Request Entity Too Large" error to the client.
-	/// Set to null to allow any size. The size might still be restricted by the web server or operating system.
-	/// This property will take precedence over <see cref="MaxAllowedUploadSizeInBytes" />.
 	/// </summary>
 	public virtual long? MaxAllowedUploadSizeInBytesLong { get; set; }
 
@@ -58,7 +53,7 @@ public class DefaultTusConfiguration
 
 	/// <summary>
 	/// Set an expiration time where incomplete files can no longer be updated.
-	/// This value can either be <code>AbsoluteExpiration</code> or <code>SlidingExpiration</code>.
+	/// This value can either be <c>AbsoluteExpiration</c> or <c>SlidingExpiration</c>.
 	/// Absolute expiration will be saved per file when the file is created.
 	/// Sliding expiration will be saved per file when the file is created and updated on each time the file is updated.
 	/// Setting this property to null will disable file expiration.
@@ -70,6 +65,51 @@ public class DefaultTusConfiguration
 	/// Change to <see cref="MetadataParsingStrategy.Original"/> to use the old format.
 	/// </summary>
 	public virtual MetadataParsingStrategy MetadataParsingStrategy { get; set; }
+
+	/// <summary>
+	/// Tus extensions allowed to use by the client. Defaults to <see cref="TusExtensions.All" />.
+	/// In addition to being in this list the extension must also be supported by the store provided in <see cref="DefaultTusConfiguration.Store"/> to be accessible for the client.
+	/// </summary>
+	public TusExtensions AllowedExtensions { get; set; }
+}
 ```
 
-Depending on what store is used some configuration might also be needed for the store.
+# Events
+
+tusdotnet is event based which means that the developer will set up event handlers that will fire during different phases of the upload. These are all set using the `Events` property of the `DefaultTusConfiguration` instance.
+
+For each request, the events will be called in the following order:
+1. `<configuration factory>`
+2. `OnAuthorize`
+3. `OnBeforeX`
+4. `OnXComplete`
+
+Once the file is completely uploaded the `OnFileComplete` event will fire.
+
+Each event is described below:
+* [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)
+* [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
+* [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
+* [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
+* [OnBeforeDelete](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeDelete-event)
+* [OnDeleteComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnDeleteComplete-event)
+
+# Store
+
+The store is the heart of how the data is stored by tusdotnet. Please refer to the store's documentation to find options and how to use it.
+
+* [TusDiskStore](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdiskstore)
+
+
+# Endpoint routing or middleware?
+
+tusdotnet supports running both as an endpoint and as a middleware. Which one to chose depends on the use case. 
+For most use cases it is recommended to use endpoint routing (`app.MapTus`). This requires that the runtime is .NET Core 3.1 or later.
+
+Advantages to using endpoint routing (`app.MapTus`):
+* Integration with the template engine in ASP.NET Core
+* Integration with authorization and other endpoint conventions in ASP.NET Core
+
+Advantages to using the middleware (`app.UseTus`):
+* Hybrid uploads solutions can be created, i.e. the server can handle non tus requests on the same endpoint.
+* Works on older frameworks than .NET Core 3.1
