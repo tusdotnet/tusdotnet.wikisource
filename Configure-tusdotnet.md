@@ -100,6 +100,27 @@ The store is the heart of how the data is stored by tusdotnet. Please refer to t
 
 * [TusDiskStore](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdiskstore)
 
+# Allowed extensions
+
+The tus protocol consists of a core protocol and multiple extensions that add support for various things such as deleting a file, using checksum verification and others.
+
+tusdotnet will support extensions based on what the store supports and what extensions have been enabled using the `AllowedExtensions` property on the configuration object. By default all extensions are available if the store supports them.
+
+To enable all extensions except for termination (deletion of a file):
+
+```csharp
+AllowedExtensions = TusExtensions.All.Except(TusExtensions.Termination)
+```
+
+To only allow creation and termination (a.k.a creating files and deleting files):
+```csharp
+AllowedExtensions = new TusExtensions(TusExtensions.Creation, TusExtensions.Termination)
+```
+
+To only enable a single extension:
+```csharp
+AllowedExtensions = TusExtensions.Creation
+```
 
 # Endpoint routing or middleware?
 
