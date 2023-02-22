@@ -6,9 +6,10 @@ Here you can find the most common information that we think is necessary to use 
 * [tusdotnet](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdotnet)
 * [TusDiskStore](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdiskstore)
 
-**Configure the webserver**
-* [IIS](https://github.com/tusdotnet/tusdotnet/wiki/Configure-IIS)
-* [Kestrel](https://github.com/tusdotnet/tusdotnet/wiki/Configure-Kestrel)
+**Configure the webserver/reverse proxy**
+* [Configure IIS](https://github.com/tusdotnet/tusdotnet/wiki/Configure-IIS)
+* [Configure Kestrel](https://github.com/tusdotnet/tusdotnet/wiki/Configure-Kestrel)
+* [Configure other reverse proxies](https://github.com/tusdotnet/tusdotnet/wiki/Configure-other-reverse-proxies)
 
 **Configure CORS**
 * [Cross Domain Requests (CORS)](https://github.com/tusdotnet/tusdotnet/wiki/Cross-domain-requests-(CORS))
