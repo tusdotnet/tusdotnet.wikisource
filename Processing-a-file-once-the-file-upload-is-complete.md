@@ -1,5 +1,7 @@
 tusdotnet supports processing of a file once it has been completed using the `OnFileCompleteAsync` callback.
 
+> :information_source: Note that this event only fires for client requests and not when manually calling the store's methods.
+
 ```csharp
 app.UseTus(httpContext => new DefaultTusConfiguration
 {
