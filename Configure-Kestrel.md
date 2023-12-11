@@ -15,12 +15,12 @@ app.Use(async (httpContext, next) =>
 
     // Add timeout to the current request cancellation token. 
     // If the client does a clean disconnect the cancellation token will also be flagged as cancelled.
-    using var timoutCts = CancellationTokenSource.CreateLinkedTokenSource(httpContext.RequestAborted);
+    using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(httpContext.RequestAborted);
 
     // Make sure to cancel the cancellation token after the timeout. 
     // Once this timeout has been reached, tusdotnet will cancel all pending reads 
     // from the client and save the parts of the file has been received so far.
-    timoutCts.CancelAfter(requestTimeout);
+    timeoutCts.CancelAfter(requestTimeout);
 
     // Replace the request cancellation token with our token that supports timeouts.
     httpContext.RequestAborted = timeoutCts.Token;
