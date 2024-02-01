@@ -16,11 +16,11 @@ Here you can find the most common information that we think is necessary to use 
 
 **Usage**
 * [Validating metadata before creating a file](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
+* [Modify the upload url returned to the client](https://github.com/tusdotnet/tusdotnet/wiki/Modify-the-upload-url-returned-to-the-client)
 * [Processing a completed upload](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
     * [Deleting a completed upload](https://github.com/tusdotnet/tusdotnet/wiki/Deleting-processed-files-when-upload-is-complete)
 * [Downloading files](https://github.com/tusdotnet/tusdotnet/wiki/Downloading-files)
 * [Removing expired incomplete files](https://github.com/tusdotnet/tusdotnet/wiki/Removing-expired-incomplete-files)
-* [Modify the upload url returned to the client](https://github.com/tusdotnet/tusdotnet/wiki/Modify-the-upload-url-returned-to-the-client)
 
 **Events**
 * [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)

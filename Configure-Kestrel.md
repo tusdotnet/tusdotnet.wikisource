@@ -1,3 +1,5 @@
+> :warning: As of tusdotnet 2.8 this configuration is no longer needed. The page is kept for backward compatibility. For tusdotnet 2.8 or later use `DefaultTusConfiguration.ClientReadTimeout` instead.
+
 This page describes how to configure Kestrel if not running behind a reverse proxy such as IIS or Nginx.
 
 Kestrel does not by default have a request timeout <sup>[[1](https://github.com/aspnet/KestrelHttpServer/pull/485#discussion_r55264843), [2](https://github.com/dotnet/aspnetcore/issues/10079#issuecomment-490519795)]</sup> and thus does not cancel the request cancellation token if the client disconnects abruptly. As tusdotnet relies on this information to handle client disconnects it might end up in locked files, unreleased resources etc.
