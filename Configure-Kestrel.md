@@ -1,4 +1,4 @@
-> :warning: As of tusdotnet 2.8 this configuration is no longer needed. The page is kept for backward compatibility. For tusdotnet 2.8 or later use `DefaultTusConfiguration.ClientReadTimeout` instead.
+> :warning: As of tusdotnet 2.8 this configuration is no longer needed. The page is kept for backward compatibility. For tusdotnet 2.8 or later use [`DefaultTusConfiguration.ClientReadTimeout`](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdotnet) instead.
 
 This page describes how to configure Kestrel if not running behind a reverse proxy such as IIS or Nginx.
 
