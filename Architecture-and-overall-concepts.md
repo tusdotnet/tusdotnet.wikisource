@@ -15,7 +15,7 @@ The middleware will forward all requests that it cannot handle, e.g. GET request
 ## Configuration object
 The configuration object tells the TusMiddleware what options to use. It currently supports setting what URL to listen to, what data store to use and custom callbacks to run during the request processing.
 
-See [Configure tusdotnet](https://github.com/smatsson/tusdotnet/wiki/Configure-tusdotnet) for more details.
+See [Configure tusdotnet](Configure-tusdotnet) for more details.
 
 ## Data store
-The data store is where tusdotnet stores its data and also what determines the functionality of the server running tusdotnet. There are a number of interfaces that the store can implement each giving the system more functionality. tusdotnet ships with `TusDiskStore` which is a simple store that saves data in a folder on the server disk. [Custom data stores](https://github.com/smatsson/tusdotnet/wiki/Custom-data-store) are supported. 
+The data store is where tusdotnet stores its data and also what determines the functionality of the server running tusdotnet. There are a number of interfaces that the store can implement each giving the system more functionality. tusdotnet ships with `TusDiskStore` which is a simple store that saves data in a folder on the server disk. [Custom data stores](Custom-data-store) are supported. 

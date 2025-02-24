@@ -1,7 +1,5 @@
 To allow a browser to upload files from a page on a different domain you will need to enable cross origin resource sharing (CORS).
 
-*Note*: There is an open issue on creating a helper for getting exposed headers or the entire cors policy: https://github.com/smatsson/tusdotnet/issues/19
-
 # ASP.NET 4.x
 
 Install package Microsoft.Owin.Cors and modify your Startup class as below.

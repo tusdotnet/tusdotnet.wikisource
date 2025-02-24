@@ -3,38 +3,38 @@ Welcome to the tusdotnet wiki!
 Here you can find the most common information that we think is necessary to use tusdotnet. Feel free to post an [issue](https://github.com/tusdotnet/tusdotnet/issues/new) if something is out of order or missing!
 
 **Configuration**
-* [tusdotnet](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdotnet)
-* [TusDiskStore](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdiskstore)
+* [tusdotnet](Configure-tusdotnet)
+* [TusDiskStore](Configure-tusdiskstore)
 
 **Configure the webserver/reverse proxy**
-* [Configure IIS](https://github.com/tusdotnet/tusdotnet/wiki/Configure-IIS)
-* [Configure Kestrel](https://github.com/tusdotnet/tusdotnet/wiki/Configure-Kestrel)
-* [Configure other reverse proxies](https://github.com/tusdotnet/tusdotnet/wiki/Configure-other-reverse-proxies)
+* [Configure IIS](Configure-IIS)
+* [Configure Kestrel](Configure-Kestrel)
+* [Configure other reverse proxies](Configure-other-reverse-proxies)
 
 **Configure CORS**
-* [Cross Domain Requests (CORS)](https://github.com/tusdotnet/tusdotnet/wiki/Cross-domain-requests-(CORS))
+* [Cross Domain Requests (CORS)](Cross-domain-requests-(CORS))
 
 **Usage**
-* [Validating metadata before creating a file](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
-* [Modify the upload url returned to the client](https://github.com/tusdotnet/tusdotnet/wiki/Modify-the-upload-url-returned-to-the-client)
-* [Processing a completed upload](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
-    * [Deleting a completed upload](https://github.com/tusdotnet/tusdotnet/wiki/Deleting-processed-files-when-upload-is-complete)
-* [Downloading files](https://github.com/tusdotnet/tusdotnet/wiki/Downloading-files)
-* [Removing expired incomplete files](https://github.com/tusdotnet/tusdotnet/wiki/Removing-expired-incomplete-files)
+* [Validating metadata before creating a file](OnBeforeCreate-event)
+* [Modify the upload url returned to the client](Modify-the-upload-url-returned-to-the-client)
+* [Processing a completed upload](Processing-a-file-once-the-file-upload-is-complete)
+    * [Deleting a completed upload](Deleting-processed-files-when-upload-is-complete)
+* [Downloading files](Downloading-files)
+* [Removing expired incomplete files](Removing-expired-incomplete-files)
 
 **Events**
-* [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)
-* [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
-* [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
-* [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
-* [OnBeforeDelete](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeDelete-event)
-* [OnDeleteComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnDeleteComplete-event)
+* [OnAuthorize](OnAuthorizeAsync-event)
+* [OnFileComplete](Processing-a-file-once-the-file-upload-is-complete)
+* [OnBeforeCreate](OnBeforeCreate-event)
+* [OnCreateComplete](OnCreateComplete-event)
+* [OnBeforeDelete](OnBeforeDelete-event)
+* [OnDeleteComplete](OnDeleteComplete-event)
 
 
 **Customizing**
-* [Custom data store](https://github.com/tusdotnet/tusdotnet/wiki/Custom-data-store)
-* [Custom file id provider](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Id-Provider)
-* [Custom file lock](https://github.com/smatsson/tusdotnet/wiki/Custom-File-Lock)
+* [Custom data store](Custom-data-store)
+* [Custom file id provider](Custom-File-Id-Provider)
+* [Custom file lock](Custom-File-Lock)
 
 **Technical**
-* [Architecture and overall concepts](https://github.com/tusdotnet/tusdotnet/wiki/Architecture-and-overall-concepts)
+* [Architecture and overall concepts](Architecture-and-overall-concepts)

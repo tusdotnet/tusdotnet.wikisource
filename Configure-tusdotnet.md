@@ -105,18 +105,18 @@ For each request, the events will be called in the following order:
 Once the file is completely uploaded the `OnFileComplete` event will fire.
 
 Each event is described below:
-* [OnAuthorize](https://github.com/tusdotnet/tusdotnet/wiki/OnAuthorizeAsync-event)
-* [OnFileComplete](https://github.com/tusdotnet/tusdotnet/wiki/Processing-a-file-once-the-file-upload-is-complete)
-* [OnBeforeCreate](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeCreate-event)
-* [OnCreateComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnCreateComplete-event)
-* [OnBeforeDelete](https://github.com/tusdotnet/tusdotnet/wiki/OnBeforeDelete-event)
-* [OnDeleteComplete](https://github.com/tusdotnet/tusdotnet/wiki/OnDeleteComplete-event)
+* [OnAuthorize](OnAuthorizeAsync-event)
+* [OnFileComplete](Processing-a-file-once-the-file-upload-is-complete)
+* [OnBeforeCreate](OnBeforeCreate-event)
+* [OnCreateComplete](OnCreateComplete-event)
+* [OnBeforeDelete](OnBeforeDelete-event)
+* [OnDeleteComplete](OnDeleteComplete-event)
 
 # Store
 
 The store is the heart of how the data is stored by tusdotnet. Please refer to the store's documentation to find options and how to use it.
 
-* [TusDiskStore](https://github.com/tusdotnet/tusdotnet/wiki/Configure-tusdiskstore)
+* [TusDiskStore](Configure-tusdiskstore)
 
 # Allowed extensions
 
