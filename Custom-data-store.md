@@ -20,9 +20,11 @@ Required: yes | Tus-Extension: \<none\>
 
 This is the interface for the core protocol. It must be implemented for the store to work.
 
-NOTE: It is recommended to implement [ITusPipelineStore](#ituspipelinestore) instead of this interface if running on modern platforms (.NET Core 3.1 or later).
-
 Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
+
+*Note*: It is recommended to implement [ITusPipelineStore](#ituspipelinestore) instead of this interface if running on modern platforms (.NET Core 3.1 or later).
+
+*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `stream.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
 
 ```csharp
 public interface ITusStore
@@ -71,6 +73,8 @@ This is the interface for the core protocol when using System.IO.Pipelines for r
 
 Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
 
+*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
+
 ```csharp
 public interface ITusPipelineStore : ITusStore
 {
@@ -85,36 +89,37 @@ public interface ITusPipelineStore : ITusStore
 	/// <returns>The number of bytes written</returns>
 	Task<long> AppendDataAsync(string fileId, PipeReader pipeReader, CancellationToken cancellationToken);
 }
-
 ```
 
 ## ITusChecksumStore
 Required: no | Tus-Extension: checksum
 
-This interface adds support for checksum verification of files. 
+This interface adds support for checksum verification of files. The `VerifyChecksumAsync` must remove all uploaded data in the last chunk if this method is about to return false. See the protocol specification for more details.
+
+*Note*: If this interface is implemented one can use the `GetUploadChecksumInfo` extension method in `AppendDataAsync` to get the client's provided checksum information. The extension method is available for both the stream and the pipe reader implementation. See [ITusStore](#itusstore) or [ITusPipelineStore](#ituspipelinestore) for more details.
 
 Read more: http://tus.io/protocols/resumable-upload.html#checksum
 
 ```csharp
 public interface ITusChecksumStore
-	{
-		/// <summary>
-		/// Returns a collection of hash algorithms that the store supports (e.g. sha1).
-		/// </summary>
-		/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
-		/// <returns>The collection of hash algorithms</returns>
-		Task<IEnumerable<string>> GetSupportedAlgorithmsAsync(CancellationToken cancellationToken);
+{
+	/// <summary>
+	/// Returns a collection of hash algorithms that the store supports (e.g. sha1).
+	/// </summary>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>The collection of hash algorithms</returns>
+	Task<IEnumerable<string>> GetSupportedAlgorithmsAsync(CancellationToken cancellationToken);
 
-		/// <summary>
-		/// Verify that the provided checksum matches the file checksum.
-		/// </summary>
-		/// <param name="fileId">The id of the file to check</param>
-		/// <param name="algorithm">The checksum algorithm to use when checking. This algorithm must be supported by the store.</param>
-		/// <param name="checksum">The checksom to use for verification</param>
-		/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
-		/// <returns>True if the checksum matches otherwise false</returns>
-		Task<bool> VerifyChecksumAsync(string fileId, string algorithm, byte[] checksum, CancellationToken cancellationToken);
-	}
+	/// <summary>
+	/// Verify that the provided checksum matches the file checksum.
+	/// </summary>
+	/// <param name="fileId">The id of the file to check</param>
+	/// <param name="algorithm">The checksum algorithm to use when checking. This algorithm must be supported by the store.</param>
+	/// <param name="checksum">The checksom to use for verification</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>True if the checksum matches otherwise false</returns>
+	Task<bool> VerifyChecksumAsync(string fileId, string algorithm, byte[] checksum, CancellationToken cancellationToken);
+}
 ```
 
 ## ITusConcatenationStore
@@ -222,21 +227,21 @@ Read more: http://tus.io/protocols/resumable-upload.html#termination
 
 ```csharp
 public interface ITusTerminationStore
-	{
-		/// <summary>
-		/// Delete a file from the data store.
-		/// </summary>
-		/// <param name="fileId">The id of the file to delete</param>
-		/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
-		/// <returns>Task</returns>
-		Task DeleteFileAsync(string fileId, CancellationToken cancellationToken);
-	}
+{
+	/// <summary>
+	/// Delete a file from the data store.
+	/// </summary>
+	/// <param name="fileId">The id of the file to delete</param>
+	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
+	/// <returns>Task</returns>
+	Task DeleteFileAsync(string fileId, CancellationToken cancellationToken);
+}
 ```
 
 ## ITusReadableStore
 Required: no | Tus-Extension: \<none\>
 
-ITusReadableStore is a simple interface that is not part of the tus spec. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](https://github.com/smatsson/tusdotnet/wiki/Downloading-files) page.
+ITusReadableStore is a simple interface that is not part of the tus spec. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](Downloading-files) page.
 
 ```csharp
 public interface ITusReadableStore
@@ -258,7 +263,8 @@ Required: no | Tus-Extension: expiration
 This interface adds support for the expiration extension allowin the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
 
 Read more: http://tus.io/protocols/resumable-upload.html#expiration
-Read more on the wiki on how to setup cleanup of expired files: https://github.com/smatsson/tusdotnet/wiki/Removing-expired-incomplete-files
+
+Read more on the wiki on [how to setup cleanup of expired files](Removing-expired-incomplete-files)
 
 ```csharp
 public interface ITusExpirationStore
