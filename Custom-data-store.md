@@ -73,7 +73,7 @@ This is the interface for the core protocol when using System.IO.Pipelines for r
 
 Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
 
-*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
+*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the pipe instead of doing an additional pass of the written data.
 
 ```csharp
 public interface ITusPipelineStore : ITusStore
