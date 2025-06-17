@@ -20,14 +20,14 @@ app.UseTus(context => new DefaultTusConfiguration
 	{
 		OnBeforeWriteAsync = ctx =>
 		{
-            if (ctx.Store.GetUploadOffsetAsync(ctx.FileId, CancellationToken.None).Result != ctx.UploadOffset)
-            {
-                ctx.FailRequest(HttpStatusCode.BadRequest);
-            }
-            if (!SomeBusinessLogic())
-            {
-                ctx.FailRequest("Failing request due to some business logic")
-            }
+			if (ctx.Store.GetUploadOffsetAsync(ctx.FileId, CancellationToken.None).Result != ctx.UploadOffset)
+			{
+				ctx.FailRequest(HttpStatusCode.BadRequest);
+			}
+			if (!SomeBusinessLogic())
+			{
+				ctx.FailRequest("Failing request due to some business logic")
+			}
 
 			return Task.CompletedTask;
 		}
