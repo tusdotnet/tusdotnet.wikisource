@@ -25,5 +25,6 @@ app.UseTus(context => new DefaultTusConfiguration
 
 			return Task.CompletedTask;
 		}
+	}
 });
 ```
