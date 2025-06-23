@@ -106,6 +106,7 @@ Once the file is completely uploaded the `OnFileComplete` event will fire.
 
 Each event is described below:
 * [OnAuthorize](OnAuthorizeAsync-event)
+* [OnBeforeWrite](OnBeforeWrite-event)
 * [OnFileComplete](Processing-a-file-once-the-file-upload-is-complete)
 * [OnBeforeCreate](OnBeforeCreate-event)
 * [OnCreateComplete](OnCreateComplete-event)
