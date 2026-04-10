@@ -6,16 +6,15 @@ If you must use the Stream implementation, please consider the following points:
 
 - The Stream can only be read once because it is not seekable. Buffering must be enabled for it to function correctly.
 
-- Using `HttpRequest.EnableBuffering()` to rewind the body stream is a quick solution, but it has downsides when using `TusDiskStore`. It causes the content to be written to disk twice — first by the buffering mechanism and again by the tusdotnet configured store, resulting in unnecessary disk I/O and performance issues.
+- Using `HttpRequest.EnableBuffering()` to rewind the body stream is a quick solution, but it has downsides when using `TusDiskStore`. It causes the content to be written to disk twice, first by the buffering mechanism and again by the tusdotnet configured store, resulting in unnecessary disk I/O and performance issues.
 
 Calling `FailRequest` on the `BeforeWriteContext` passed to the callback will reject the request with a 400 Bad Request status code. Calling `FailRequest` multiple times will concatenate the error messages.
 
 > :information_source: Note that this event only fires for client requests and not when manually calling the store's methods.
 
 ```csharp
-app.UseTus(context => new DefaultTusConfiguration
+app.MapTus("/files", context => new DefaultTusConfiguration
 {
-	UrlPath = "/files",
 	Store = new TusDiskStore(@"C:\tusfiles\"),
 	Events = new Events
 	{
@@ -33,13 +32,12 @@ app.UseTus(context => new DefaultTusConfiguration
 ```
 
 ```csharp
-app.UseTus(context => new DefaultTusConfiguration
+app.MapTus("/files", context => new DefaultTusConfiguration
 {
-	UrlPath = "/files",
 	Store = new TusDiskStore(@"C:\tusfiles\"),
 	Events = new Events
 	{
-		OnBeforeWriteAsync = ctx =>
+		OnBeforeWriteAsync = async ctx =>
 		{
 			if (ctx.UploadOffset is not 0)
 				return;

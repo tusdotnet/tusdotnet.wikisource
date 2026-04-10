@@ -9,7 +9,7 @@ Note that you can still send bigger files using tusdotnet by specifying a `chunk
 # OWIN
 
 You need to add two things:
-* maxRequestLenght to system.web/httpRuntime (expressed in KB)
+* maxRequestLength to system.web/httpRuntime (expressed in KB)
 * maxAllowedContentLength to system.webServer/security/requestFiltering/requestLimits (expressed in bytes)
 
 ```

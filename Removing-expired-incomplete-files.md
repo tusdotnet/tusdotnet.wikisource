@@ -1,15 +1,14 @@
-If the store being used supports `ITusExpirationStore` (`TusDiskStore` does) you can specify that incomplete files that have not been updated in a set time period should be flagged as expired. This is done automatically by tusdotnet if the Expiration-property is set on the `ITusConfiguration` and if the store supports `ITusExpirationStore`. Files are however not deleted automatically. To help with deleting expired incomplete files the `ITusExpirationStore` interface exposes two methods, `GetExpiredFilesAsync` and `DeleteExpiredFilesAsync`. The former is used to get a list of ids of files that have expired and the latter is used to remove the expired files.
+If the store supports `ITusExpirationStore` (`TusDiskStore` does), you can specify that incomplete files which have not been updated within a set time period should be flagged as expired. tusdotnet handles the flagging automatically when the `Expiration` property is set on `DefaultTusConfiguration`, but does not delete the files. Deletion must be implemented by the developer.
 
-tusdotnet does not automatically remove expired files so this needs to be implemented by the developer. This can be achieved by e.g. a `IHostedService` as in [this example in the .NET 6 test site](https://github.com/tusdotnet/tusdotnet/blob/master/Source/TestSites/AspNetCore_net6.0_TestApp/Services/ExpiredFilesCleanupService.cs).
+A common approach is to use an `IHostedService` to periodically clean up expired files, as shown in [this example in the test site](https://github.com/tusdotnet/tusdotnet/blob/master/Source/TestSites/AspNetCore_net6.0_TestApp/Services/ExpiredFilesCleanupService.cs).
 
-> :information_source: The methods described on this page only applies to _incomplete_ expired files as this is how `TusDiskStore` is implemented. Files that are completed will not be returned by `GetExpiredFilesAsync` nor deleted by `RemoveExpiredFilesAsync`. Completed files needs to be deleted manually after any processing is done. Other stores might implement this differently.
+> :information_source: The expiration methods only apply to _incomplete_ files. Completed files will not be returned by `GetExpiredFilesAsync` or deleted by `RemoveExpiredFilesAsync`. Completed files need to be deleted manually after processing. Other stores may implement this differently.
 
-Example usage:
 ```csharp
+IEnumerable<string> expiredFileIds = await store.GetExpiredFilesAsync(cancellationToken);
+// If you need control over what gets deleted, you can iterate expiredFileIds and delete
+// them one by one using ITusTerminationStore.DeleteFileAsync.
 
-IEnumerable<string> expiredFileIds = await tusDiskStore.GetExpiredFilesAsync(cancellationToken);
-// TODO: Do something with expiredFileIds.
-
-int numberOfRemovedFiles = await tusDiskStore.RemoveExpiredFilesAsync(cancellationToken);
+int numberOfRemovedFiles = await store.RemoveExpiredFilesAsync(cancellationToken);
 // TODO: Do something with numberOfRemovedFiles.
 ```

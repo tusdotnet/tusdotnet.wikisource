@@ -1,8 +1,24 @@
 To allow a browser to upload files from a page on a different domain you will need to enable cross origin resource sharing (CORS).
 
-# ASP.NET 4.x
+# ASP.NET Core
 
-Install package Microsoft.Owin.Cors and modify your Startup class as below.
+```csharp
+// Program.cs
+builder.Services.AddCors();
+
+app.UseCors(builder => builder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins("https://example.com") // Replace with your actual origin(s)
+    .WithExposedHeaders(tusdotnet.Helpers.CorsHelper.GetExposedHeaders())
+);
+
+app.MapTus("/files", httpContext => ...);
+```
+
+# ASP.NET 4.x (OWIN)
+
+Install the `Microsoft.Owin.Cors` package and modify your Startup class as below.
 
 ```csharp
 public void Configuration(IAppBuilder app)
@@ -11,10 +27,11 @@ public void Configuration(IAppBuilder app)
     {
         AllowAnyHeader = true,
         AllowAnyMethod = true,
-        AllowAnyOrigin = true
     };
 
-    // ExposedHeaders has a private setter for some reason so one must use reflection to set it.
+    corsPolicy.Origins.Add("https://example.com"); // Replace with your actual origin(s)
+
+    // ExposedHeaders has a private setter so reflection is needed to set it.
     corsPolicy.GetType()
         .GetProperty(nameof(corsPolicy.ExposedHeaders))
         .SetValue(corsPolicy, tusdotnet.Helpers.CorsHelper.GetExposedHeaders());
@@ -29,27 +46,4 @@ public void Configuration(IAppBuilder app)
 
     app.UseTus(...);
 }
-```
-
-# ASP.NET Core
-
-Install package Microsoft.AspNetCore.Cors and modify your Startup class as below.
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-	services.AddCors();
-}
-
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-{
-	app.UseCors(builder => builder
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin()
-                .WithExposedHeaders(tusdotnet.Helpers.CorsHelper.GetExposedHeaders())
-        );
-	app.UseTus(...);
-}
-
 ```

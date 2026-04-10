@@ -12,10 +12,9 @@ tusdotnet supports processing of a file once it has been completed using the `On
 ### Example
 
 ```csharp
-app.UseTus(httpContext => new DefaultTusConfiguration
+app.MapTus("/files", httpContext => new DefaultTusConfiguration
 {
 	Store = new TusDiskStore(@"C:\tusfiles\"),
-	UrlPath = "/files",
 	Events = new Events
 	{
 		OnFileCompleteAsync = async eventContext =>
@@ -75,10 +74,9 @@ app.MapPost(
     }
 );
 
-app.UseTus(httpContext => new DefaultTusConfiguration
+app.MapTus("/files", httpContext => new DefaultTusConfiguration
 {
 	Store = new TusDiskStore(@"C:\tusfiles\"),
-	UrlPath = "/files",
 	Events = new Events
 	{
 		OnFileCompleteAsync = async eventContext =>

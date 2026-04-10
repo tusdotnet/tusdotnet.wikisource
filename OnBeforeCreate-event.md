@@ -5,9 +5,8 @@ Calling `FailRequest` on the `BeforeCreateContext` passed to the callback will r
 > :information_source: Note that this event only fires for client requests and not when manually calling the store's methods.
 
 ```csharp
-app.UseTus(context => new DefaultTusConfiguration
+app.MapTus("/files", context => new DefaultTusConfiguration
 {
-	UrlPath = "/files",
 	Store = new TusDiskStore(@"C:\tusfiles\"),
 	Events = new Events
 	{

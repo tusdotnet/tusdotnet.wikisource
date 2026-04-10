@@ -1,38 +1,36 @@
-The OnAuthorize event is the first event to fire once a request has been determined to be a tus request. This event allows the request to be authorized for the given intent.
+The `OnAuthorizeAsync` event is the first event to fire once a request has been identified as a tus request. It is useful for fine-grained authorization that goes beyond what ASP.NET Core's built-in auth handles, such as verifying that the file being accessed belongs to the current user.
 
-Calling FailRequest on the OnAuthorizeContext passed to the callback will reject the request with the provided http status code and status message.
+Because it runs on every tus request regardless of intent, it can also be used as a general "request begin" hook for things like logging or setting up trace context.
+
+Calling `FailRequest` on the context will reject the request with the provided HTTP status code and message.
 
 ```csharp
-app.UseTus(httpContext => new DefaultTusConfiguration
+app.MapTus("/files", httpContext => new DefaultTusConfiguration
 {
-    UrlPath = "/files",
     Store = new TusDiskStore(@"C:\tusfiles\"),
     Events = new Events
     {
-        OnAuthorizeAsync = eventContext => 
+        OnAuthorizeAsync = eventContext =>
         {
-            if (!eventContext.HttpContext.User.Identity.IsAuthenticated) 
+            if (!eventContext.HttpContext.User.Identity.IsAuthenticated)
             {
                 // Note: ASP.NET Core will automatically authenticate the user using the default authentication scheme.
-                // If this is not the scheme you wish to use, call AuthenticationHttpContextExtensions.AuthenticateAsync 
+                // If this is not the scheme you wish to use, call AuthenticationHttpContextExtensions.AuthenticateAsync
                 // here to authenticate the current request using your preferred scheme.
                 eventContext.FailRequest(HttpStatusCode.Unauthorized);
                 return Task.CompletedTask;
             }
 
-            // Do other verification on the user; claims, roles, etc. In this case, check the username.
-            if (eventContext.HttpContext.User.Identity.Name != "test") 
+            if (eventContext.HttpContext.User.Identity.Name != "test")
             {
                 eventContext.FailRequest(HttpStatusCode.Forbidden, "'test' is the only allowed user");
                 return Task.CompletedTask;
             }
 
-            // Verify different things depending on the intent of the request.
-            // E.g.:
-            //   Does the file about to be written belong to this user?
-            //   Is the current user allowed to create new files or have they reached their quota?
-            //   etc etc
-            switch (ctx.Intent) {
+            // The intent tells you what the client is trying to do, allowing you to apply
+            // different authorization rules per operation.
+            switch (eventContext.Intent)
+            {
                 case IntentType.CreateFile:
                     break;
                 case IntentType.ConcatenateFiles:
@@ -45,13 +43,10 @@ app.UseTus(httpContext => new DefaultTusConfiguration
                     break;
                 case IntentType.GetOptions:
                     break;
-                default:
-                    break;
             }
 
             return Task.CompletedTask;
         }
     }
 });
-
 ```

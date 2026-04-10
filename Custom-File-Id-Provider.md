@@ -1,6 +1,6 @@
 `TusDiskStore` uses file id providers upon creating files to generate valid file ids. The default file id provider is `GuidFileIdProvider` but you can use a different file id provider by passing it to the constructor of `TusDiskStore`. tusdotnet is shipped with  the following file id providers: 
 
- - `GuidFileIdProvider` generates GUIDs (example id: `def1853a4a72464eb8b0d357c4f6e8a5`, using guildFormat = "n")
+ - `GuidFileIdProvider` generates GUIDs (example id: `def1853a4a72464eb8b0d357c4f6e8a5`, using guidFormat = "n")
  - `Base64FileIdProvider`: generates base64 ids (example id: `KjJA5IoF2Bdi58B7KK5pRw`, using byteLength = 16)
  
 Tip: If you want to generate file ids similar to youtubes video ids, use `Base64FileIdProvider(byteLength: 8)`. This will generate file ids that look like this: `xQs3c615q5M`
@@ -27,14 +27,13 @@ public class DatabaseFileIdProvider : tusdotnet.Interfaces.ITusFileIdProvider
     {
         FileEntity file = new FileEntity();
         _db.Files.Add(file);
-        await _db.Files.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         return file.Id;
     }
 
-    /// <inheritdoc />
     public async Task<bool> ValidateId(string fileId)
     {
-        return _db.Files.ExistsAsync(fileId);
+        return await _db.Files.AnyAsync(f => f.Id == fileId);
     }
 }
 ```
@@ -47,7 +46,7 @@ public class DatabaseGuidProvider : tusdotnet.Stores.FileIdProviders.GuidFileIdP
     private readonly ApplicationDbContext _db;
 
     /// <summary>
-    /// Creates a new DatabaseFileIdProvider
+    /// Creates a new DatabaseGuidProvider
     /// </summary>
     public DatabaseGuidProvider(ApplicationDbContext db) : base()
     {
@@ -58,17 +57,17 @@ public class DatabaseGuidProvider : tusdotnet.Stores.FileIdProviders.GuidFileIdP
     public override async Task<string> CreateId(string metadata)
     {
         FileEntity file = new FileEntity();
-        file.Id = base.CreateId();
+        file.Id = await base.CreateId(metadata);
 
         _db.Files.Add(file);
-        await _db.Files.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         return file.Id;
     }
 
     /// <inheritdoc />
     public override async Task<bool> ValidateId(string fileId)
     {
-        return await base.ValidateId(fileId) && await _db.Files.ExistsAsync(fileId);
+        return await base.ValidateId(fileId) && await _db.Files.AnyAsync(f => f.Id == fileId);
     }
 }
 ```
