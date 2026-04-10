@@ -9,7 +9,7 @@ app.MapTus("/files", context => new DefaultTusConfiguration {... });
 
 ```
 
-The "configuration factory" (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`.
+The "configuration factory" (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`. This makes the factory the right place to inject scoped services, access the current user, or return different configurations per tenant. See [Common patterns](Common-patterns) for practical examples.
 
 The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties. Return null from the factory to disable tusdotnet for the current request.
 

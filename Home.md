@@ -15,6 +15,7 @@ Here you can find the most common information that we think is necessary to use 
 * [Cross Domain Requests (CORS)](Cross-domain-requests-(CORS))
 
 **Usage**
+* [Common patterns](Common-patterns)
 * [Validating metadata before creating a file](OnBeforeCreate-event)
 * [Modify the upload url returned to the client](Modify-the-upload-url-returned-to-the-client)
 * [Processing a completed upload](Processing-a-file-once-the-file-upload-is-complete)
