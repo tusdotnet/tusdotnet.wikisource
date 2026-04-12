@@ -22,7 +22,7 @@ app.MapTus("/files", context => new DefaultTusConfiguration
 		{
 			if (!SomeBusinessLogic())
 			{
-				ctx.FailRequest("Failing request due to some business logic")
+				ctx.FailRequest("Failing request due to some business logic");
 			}
 
 			return Task.CompletedTask;
@@ -51,6 +51,7 @@ app.MapTus("/files", context => new DefaultTusConfiguration
 
 			if (isValid)
 			{
+				var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
 				logger.LogInformation("File contains the data needed");
 			}
 			else
@@ -58,9 +59,9 @@ app.MapTus("/files", context => new DefaultTusConfiguration
 				ctx.FailRequest("File is invalid");
 			}
 
-			ctx.HttpContext.Request.BodyReader.AdvanceTo(read.Buffer.Start, read.Buffer.Start);
+			ctx.HttpContext.Request.BodyReader.AdvanceTo(read.Buffer.Start, read.Buffer.End);
 		},
-    }
+	}
 });
 ```
 

@@ -22,7 +22,7 @@ app.MapTus("/files", httpContext => new DefaultTusConfiguration
 			ITusFile file = await eventContext.GetFileAsync();
 			
 			var result = await DoSomeProcessing(file, eventContext.CancellationToken);
-			eventContext.HttpContext.Headers.Append("Result", result);
+			eventContext.HttpContext.Response.Headers.Append("Result", result);
 		}
 	}
 });
@@ -86,7 +86,7 @@ app.MapTus("/files", httpContext => new DefaultTusConfiguration
 			await QueueForProcessing(file);
 			
 			// One could also use the OnAuthorizeAsync event to add the header to all responses depending on the use case.
-			eventContext.HttpContext.Headers.Append("Content-Location", $"/status/{file.Id}");
+			eventContext.HttpContext.Response.Headers.Append("Content-Location", $"/status/{file.Id}");
 		}
 	}
 });

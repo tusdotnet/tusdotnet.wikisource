@@ -49,7 +49,7 @@ public interface ITusStore
 	Task<bool> FileExistAsync(string fileId, CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Returns the upload length specified when the file was created or null if Defer-Upload-Lenght was used.
+	/// Returns the upload length specified when the file was created or null if Defer-Upload-Length was used.
 	/// </summary>
 	/// <param name="fileId">The id of the file to check.</param>
 	/// <param name="cancellationToken">Cancellation token to use when cancelling.</param>
@@ -115,7 +115,7 @@ public interface ITusChecksumStore
 	/// </summary>
 	/// <param name="fileId">The id of the file to check</param>
 	/// <param name="algorithm">The checksum algorithm to use when checking. This algorithm must be supported by the store.</param>
-	/// <param name="checksum">The checksom to use for verification</param>
+	/// <param name="checksum">The checksum to use for verification</param>
 	/// <param name="cancellationToken">Cancellation token to use when cancelling</param>
 	/// <returns>True if the checksum matches otherwise false</returns>
 	Task<bool> VerifyChecksumAsync(string fileId, string algorithm, byte[] checksum, CancellationToken cancellationToken);
@@ -260,7 +260,7 @@ public interface ITusReadableStore
 ## ITusExpirationStore
 Required: no | Tus-Extension: expiration
 
-This interface adds support for the expiration extension allowin the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
+This interface adds support for the expiration extension allowing the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
 
 Read more: http://tus.io/protocols/resumable-upload.html#expiration
 

@@ -10,6 +10,7 @@ app.MapTus("/files", context => new DefaultTusConfiguration
     {
         OnDeleteCompleteAsync = ctx =>
         {
+            var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
             logger.LogInformation($"Deleted file {ctx.FileId} using {ctx.Store.GetType().FullName}");
             return Task.CompletedTask;
         }

@@ -42,21 +42,26 @@ app.MapTus("/files", async httpContext => new DefaultTusConfiguration
 For more fine-grained control, such as verifying that the file being written or deleted belongs to the current user, use the `OnAuthorizeAsync` event. It runs on every tus request and exposes the intent (create, write, delete etc.):
 
 ```csharp
-app.MapTus("/files", async httpContext => new DefaultTusConfiguration
+app.MapTus("/files", async httpContext =>
 {
-    Store = new TusDiskStore("/uploads"),
-    Events = new Events
+    var myDb = httpContext.RequestServices.GetRequiredService<MyDbContext>();
+
+    return new DefaultTusConfiguration
     {
-        OnAuthorizeAsync = async ctx =>
+        Store = new TusDiskStore("/uploads"),
+        Events = new Events
         {
-            if (ctx.Intent == IntentType.WriteFile || ctx.Intent == IntentType.DeleteFile)
+            OnAuthorizeAsync = async ctx =>
             {
-                var fileOwner = await myDb.GetFileOwnerAsync(ctx.FileId);
-                if (fileOwner != ctx.HttpContext.User.Identity.Name)
-                    ctx.FailRequest(HttpStatusCode.Forbidden);
+                if (ctx.Intent == IntentType.WriteFile || ctx.Intent == IntentType.DeleteFile)
+                {
+                    var fileOwner = await myDb.GetFileOwnerAsync(ctx.FileId);
+                    if (fileOwner != ctx.HttpContext.User.Identity.Name)
+                        ctx.FailRequest(HttpStatusCode.Forbidden);
+                }
             }
         }
-    }
+    };
 });
 ```
 
@@ -89,23 +94,25 @@ app.MapTus("/files", async httpContext =>
 Use `OnFileCompleteAsync` to react when the last chunk of a file has been received. This is the right place to kick off post-processing, move the file, or notify another service.
 
 ```csharp
-app.MapTus("/files", async httpContext => new DefaultTusConfiguration
+app.MapTus("/files", async httpContext =>
 {
-    Store = new TusDiskStore("/uploads"),
-    Events = new Events
+    var processingQueue = httpContext.RequestServices.GetRequiredService<IProcessingQueue>();
+
+    return new DefaultTusConfiguration
     {
-        OnFileCompleteAsync = async ctx =>
+        Store = new TusDiskStore("/uploads"),
+        Events = new Events
         {
-            var file = await ctx.GetFileAsync();
-            var metadata = await file.GetMetadataAsync(ctx.CancellationToken);
+            OnFileCompleteAsync = async ctx =>
+            {
+                await processingQueue.EnqueueAsync(ctx.FileId);
 
-            await myProcessingQueue.EnqueueAsync(file.Id);
-
-            ctx.HttpContext.Response.Headers.Append(
-                "Content-Location", $"/status/{file.Id}"
-            );
+                ctx.HttpContext.Response.Headers.Append(
+                    "Content-Location", $"/status/{ctx.FileId}"
+                );
+            }
         }
-    }
+    };
 });
 ```
 
@@ -118,39 +125,44 @@ Events are separate callbacks with no built-in shared state. `HttpContext.Items`
 A common example is looking up a database record in `OnBeforeCreateAsync` and reusing it in `OnCreateCompleteAsync` without hitting the database twice:
 
 ```csharp
-app.MapTus("/files", async httpContext => new DefaultTusConfiguration
+app.MapTus("/files", async httpContext =>
 {
-    Store = new TusDiskStore("/uploads"),
-    Events = new Events
+    var myDb = httpContext.RequestServices.GetRequiredService<MyDbContext>();
+
+    return new DefaultTusConfiguration
     {
-        OnBeforeCreateAsync = async ctx =>
+        Store = new TusDiskStore("/uploads"),
+        Events = new Events
         {
-            var metadata = ctx.Metadata;
-
-            if (!metadata.ContainsKey("projectId"))
+            OnBeforeCreateAsync = async ctx =>
             {
-                ctx.FailRequest("projectId metadata is required");
-                return;
-            }
+                var metadata = ctx.Metadata;
 
-            var projectId = metadata["projectId"].GetString(Encoding.UTF8);
-            var project = await myDb.GetProjectAsync(projectId);
+                if (!metadata.ContainsKey("projectId"))
+                {
+                    ctx.FailRequest("projectId metadata is required");
+                    return;
+                }
 
-            if (project == null)
+                var projectId = metadata["projectId"].GetString(Encoding.UTF8);
+                var project = await myDb.GetProjectAsync(projectId);
+
+                if (project == null)
+                {
+                    ctx.FailRequest(HttpStatusCode.NotFound, "Project not found");
+                    return;
+                }
+
+                // Store the project for use in OnCreateCompleteAsync
+                ctx.HttpContext.Items["project"] = project;
+            },
+
+            OnCreateCompleteAsync = async ctx =>
             {
-                ctx.FailRequest(HttpStatusCode.NotFound, "Project not found");
-                return;
+                var project = (Project)ctx.HttpContext.Items["project"];
+
+                await myDb.RegisterUploadAsync(project.Id, ctx.FileId);
             }
-
-            // Store the project for use in OnCreateCompleteAsync
-            ctx.HttpContext.Items["project"] = project;
-        },
-
-        OnCreateCompleteAsync = async ctx =>
-        {
-            var project = (Project)ctx.HttpContext.Items["project"];
-
-            await myDb.RegisterUploadAsync(project.Id, ctx.FileId);
         }
-    }
+    };
 });
