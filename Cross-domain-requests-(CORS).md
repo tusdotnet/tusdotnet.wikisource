@@ -1,5 +1,11 @@
 To allow a browser to upload files from a page on a different domain you will need to enable cross origin resource sharing (CORS).
 
+`tusdotnet.Helpers.CorsHelper` provides helper methods for all relevant CORS values:
+
+- `GetAllowedHeaders()` for `Access-Control-Allow-Headers`
+- `GetAllowedMethods()` for `Access-Control-Allow-Methods`
+- `GetExposedHeaders()` for `Access-Control-Expose-Headers`
+
 # ASP.NET Core
 
 ```csharp
@@ -7,8 +13,10 @@ To allow a browser to upload files from a page on a different domain you will ne
 builder.Services.AddCors();
 
 app.UseCors(builder => builder
-    .AllowAnyHeader()
-    .AllowAnyMethod()
+    // CorsHelper returns the headers and methods required by the tus protocol.
+    // Modify these if your application needs additional headers or methods.
+    .WithHeaders(tusdotnet.Helpers.CorsHelper.GetAllowedHeaders())
+    .WithMethods(tusdotnet.Helpers.CorsHelper.GetAllowedMethods())
     .WithOrigins("https://example.com") // Replace with your actual origin(s)
     .WithExposedHeaders(tusdotnet.Helpers.CorsHelper.GetExposedHeaders())
 );
@@ -25,16 +33,23 @@ public void Configuration(IAppBuilder app)
 {
     var corsPolicy = new System.Web.Cors.CorsPolicy
     {
-        AllowAnyHeader = true,
-        AllowAnyMethod = true,
+        AllowAnyHeader = false,
+        AllowAnyMethod = false,
     };
 
     corsPolicy.Origins.Add("https://example.com"); // Replace with your actual origin(s)
 
-    // ExposedHeaders has a private setter so reflection is needed to set it.
-    corsPolicy.GetType()
-        .GetProperty(nameof(corsPolicy.ExposedHeaders))
-        .SetValue(corsPolicy, tusdotnet.Helpers.CorsHelper.GetExposedHeaders());
+    // CorsHelper returns the headers and methods required by the tus protocol.
+    // Modify these if your application needs additional headers or methods.
+    // Headers, Methods and ExposedHeaders have private setters; populate the existing list instances instead.
+    foreach (var header in tusdotnet.Helpers.CorsHelper.GetAllowedHeaders())
+        corsPolicy.Headers.Add(header);
+
+    foreach (var method in tusdotnet.Helpers.CorsHelper.GetAllowedMethods())
+        corsPolicy.Methods.Add(method);
+
+    foreach (var header in tusdotnet.Helpers.CorsHelper.GetExposedHeaders())
+        corsPolicy.ExposedHeaders.Add(header);
 
     app.UseCors(new CorsOptions
     {
