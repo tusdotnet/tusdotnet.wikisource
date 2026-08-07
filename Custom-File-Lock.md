@@ -1,4 +1,10 @@
-tusdotnet should not write to files that are already in use. To prevent this, tusdotnet uses a file locking mechanism using either in-memory locks (`tusdotnet.FileLocks.InMemoryFileLock`) or on disk locks (`tusdotnet.FileLocks.DiskFileLock`). By default tusdotnet will use in-memory locks.
+tusdotnet should not write to files that are already in use. To prevent this, tusdotnet uses a file locking mechanism via `ITusFileLockProvider`. Two built-in providers are available: `InMemoryFileLockProvider` (default) and `DiskFileLockProvider`.
+
+To switch to disk-based locks, use the built-in `DiskFileLockProvider`:
+
+```csharp
+FileLockProvider = new DiskFileLockProvider(@"C:\tuslocks\")
+```
 
 In certain situations it can be useful to replace this mechanism with your own implementation.
 

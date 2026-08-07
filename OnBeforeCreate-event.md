@@ -1,4 +1,4 @@
-The OnBeforeCreate event is fired just before a file is created. 
+The `OnBeforeCreate` event is fired just before a file is created. 
 
 Calling `FailRequest` on the `BeforeCreateContext` passed to the callback will reject the request with a 400 Bad Request status code. Calling `FailRequest` multiple times will concatenate the error messages.
 

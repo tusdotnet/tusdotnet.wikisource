@@ -4,7 +4,7 @@ tusdotnet does not automatically delete files after they are processed, it has t
 
 Deleting files requires that the store implements `ITusTerminationStore` (`TusDiskStore` does). If you are unsure whether the configured store supports it, check before casting.
 
-## Example usage:
+## Example usage
 
 ```csharp
 

@@ -24,7 +24,7 @@ Store = new TusDiskStore(@"C:\tusfiles\")
 | `directoryPath` | `string` | - | Path to the directory where files are stored |
 | `deletePartialFilesOnConcat` | `bool` | `false` | Delete partial files when a final file is created using the concatenation extension |
 | `bufferSize` | `TusDiskBufferSize` | `TusDiskBufferSize.Default` | Read/write buffer sizes. Use `TusDiskBufferSize.Default` or `new TusDiskBufferSize(writeBufferSizeInBytes, readBufferSizeInBytes)` |
-| `fileIdProvider` | `IFileIdProvider` | GUID-based | Custom [file ID generation](Custom-File-Id-Provider) |
+| `fileIdProvider` | `ITusFileIdProvider` | GUID-based | Custom [file ID generation](Custom-File-Id-Provider) |
 
 ## Complete example
 

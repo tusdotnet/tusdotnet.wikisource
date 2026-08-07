@@ -1,4 +1,4 @@
-If the store supports `ITusExpirationStore` (`TusDiskStore` does), you can specify that incomplete files which have not been updated within a set time period should be flagged as expired. tusdotnet handles the flagging automatically when the `Expiration` property is set on `DefaultTusConfiguration`, but does not delete the files. Deletion must be implemented by the developer.
+If the store supports `ITusExpirationStore` (`TusDiskStore` does), you can specify that incomplete files that have not been updated within a set time period should be flagged as expired. tusdotnet handles the flagging automatically when the `Expiration` property is set on `DefaultTusConfiguration`, but does not delete the files. Deletion must be implemented by the developer.
 
 A common approach is to use an `IHostedService` to periodically clean up expired files, as shown in [this example in the test site](https://github.com/tusdotnet/tusdotnet/blob/master/Source/TestSites/AspNetCore_net6.0_TestApp/Services/ExpiredFilesCleanupService.cs).
 

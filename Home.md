@@ -4,7 +4,7 @@ Here you can find the most common information that we think is necessary to use 
 
 **Configuration**
 * [tusdotnet](Configure-tusdotnet)
-* [TusDiskStore](Configure-tusdiskstore)
+* [TusDiskStore](Configure-TusDiskStore)
 
 **Configure the webserver/reverse proxy**
 * [Configure IIS](Configure-IIS)
@@ -33,9 +33,9 @@ Here you can find the most common information that we think is necessary to use 
 * [OnDeleteComplete](OnDeleteComplete-event)
 
 
-**Customizing**
+**Customization**
 * [Custom data store](Custom-data-store)
-* [Custom file id provider](Custom-File-Id-Provider)
+* [Custom file ID provider](Custom-File-Id-Provider)
 * [Custom file lock](Custom-File-Lock)
 
 **Technical**

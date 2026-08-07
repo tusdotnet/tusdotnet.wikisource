@@ -1,17 +1,19 @@
-tusdotnet is simply configured by running either `UseTus` or `MapTus` on your application builder, depending on if you like to use endpoint routing or not (see [differences further down](#endpoint-routing-or-middleware))
+tusdotnet is simply configured by running either `UseTus` or `MapTus` on your application builder, depending on whether you want to use endpoint routing or not (see [differences further down](#endpoint-routing-or-middleware))
 
 ```csharp
-app.UseTus(context => new DefaultTusConfiguration {... });
 
-// OR use endpoint routing (only available for .NET Core 3.1 and later)
-
+// Use endpoint routing (only available for .NET Core 3.1 and later)
 app.MapTus("/files", context => new DefaultTusConfiguration {... });
+
+// OR the tusdotnet middleware
+
+app.UseTus(context => new DefaultTusConfiguration {... });
 
 ```
 
 The "configuration factory" (`context => new ...`) will run on each request. Different configurations can be returned for different clients by examining the incoming `HttpContext` or `IOwinRequest`. This makes the factory the right place to inject scoped services, access the current user, or return different configurations per tenant. See [Common patterns](Common-patterns) for practical examples.
 
-The return value of the factory is a single DefaultTusConfiguration instance which contains the following properties. Return null from the factory to disable tusdotnet for the current request.
+The return value of the factory is a single `DefaultTusConfiguration` instance which contains the following properties. Return null from the factory to disable tusdotnet for the current request.
 
 ```csharp
 public class DefaultTusConfiguration
@@ -63,7 +65,7 @@ public class DefaultTusConfiguration
     /// Set an expiration time where incomplete files can no longer be updated.
     /// This value can either be <c>AbsoluteExpiration</c> or <c>SlidingExpiration</c>.
     /// Absolute expiration will be saved per file when the file is created.
-    /// Sliding expiration will be saved per file when the file is created and updated on each time the file is updated.
+    /// Sliding expiration will be saved per file when the file is created and updated each time the file is updated.
     /// Setting this property to null will disable file expiration.
     /// </summary>
     public virtual ExpirationBase Expiration { get; set; }
@@ -85,7 +87,7 @@ public class DefaultTusConfiguration
     /// The timeout is applied from the moment the store starts reading from the client until it has filled its internal read buffer.
     /// Once the buffer is filled, the timeout is reset and restarted on the next read.
     /// When <see cref="UsePipelinesIfAvailable" /> is enabled, the internal read buffer is always 4 KiB. When false, it is determined by the store.
-    /// A higher value will make tusdotnet wait longer for data, but will also result in locks not being released as fast which can be an issue if the client abrubtly disconnects due to network loss or similar.
+    /// A higher value will make tusdotnet wait longer for data, but will also result in locks not being released as fast which can be an issue if the client abruptly disconnects due to network loss or similar.
     /// The default value is 60 seconds.
     /// </summary>
     public TimeSpan ClientReadTimeout { get; set; }
@@ -117,7 +119,7 @@ Each event is described below:
 
 The store is the heart of how the data is stored by tusdotnet. Please refer to the store's documentation to find options and how to use it.
 
-* [TusDiskStore](Configure-tusdiskstore)
+* [TusDiskStore](Configure-TusDiskStore)
 
 # Allowed extensions
 
@@ -141,9 +143,14 @@ To only enable a single extension:
 AllowedExtensions = TusExtensions.Creation
 ```
 
+To disable all extensions:
+```csharp
+AllowedExtensions = TusExtensions.None
+```
+
 # Endpoint routing or middleware?
 
-tusdotnet supports running both as an endpoint and as a middleware. Which one to chose depends on the use case. 
+tusdotnet supports running both as an endpoint and as a middleware. Which one to choose depends on the use case. 
 For most use cases it is recommended to use endpoint routing (`app.MapTus`). This requires that the runtime is .NET Core 3.1 or later.
 
 Advantages to using endpoint routing (`app.MapTus`):
@@ -151,5 +158,5 @@ Advantages to using endpoint routing (`app.MapTus`):
 * Integration with authorization and other endpoint conventions in ASP.NET Core
 
 Advantages to using the middleware (`app.UseTus`):
-* Hybrid uploads solutions can be created, i.e. the server can handle non tus requests on the same endpoint.
+* Hybrid upload solutions can be created, i.e. the server can handle non tus requests on the same endpoint.
 * Works on older frameworks than .NET Core 3.1

@@ -1,5 +1,5 @@
-If you run tusdotnet on IIS you will need to configure the Web.config file to allow large requests. 
-If this is not done IIS will buffer the entire request and then return a 404. 
+If you run tusdotnet on IIS, you will need to configure the Web.config file to allow large requests.
+If this is not done, IIS will buffer the entire request and then return a 404.
 
 The default value is 4 MB.
 Roughly 2 GB (2147483647 bytes) seems to be the max value before IIS once again returns a 404. 
@@ -9,10 +9,10 @@ Note that you can still send bigger files using tusdotnet by specifying a `chunk
 # OWIN
 
 You need to add two things:
-* maxRequestLength to system.web/httpRuntime (expressed in KB)
-* maxAllowedContentLength to system.webServer/security/requestFiltering/requestLimits (expressed in bytes)
+* `maxRequestLength` to `system.web/httpRuntime` (expressed in KB)
+* `maxAllowedContentLength` to `system.webServer/security/requestFiltering/requestLimits` (expressed in bytes)
 
-```
+```xml
 <system.web>
     <httpRuntime targetFramework="4.5.2" maxRequestLength="2097151" />
   </system.web>
@@ -29,9 +29,9 @@ You need to add two things:
 
 # ASP.NET Core
 
-You only need to add maxAllowedContentLength to system.webServer/security/requestFiltering/requestLimits (expressed in bytes)
+You only need to add `maxAllowedContentLength` to `system.webServer/security/requestFiltering/requestLimits` (expressed in bytes)
 
-```
+```xml
 <system.webServer>
 	<security>
 		<requestFiltering>

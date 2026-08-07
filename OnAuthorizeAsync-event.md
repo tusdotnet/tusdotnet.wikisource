@@ -34,6 +34,7 @@ app.MapTus("/files", httpContext => new DefaultTusConfiguration
                 case IntentType.CreateFile:
                     break;
                 case IntentType.ConcatenateFiles:
+                    // eventContext.FileConcatenation contains the concatenation info (FileConcatPartial or FileConcatFinal).
                     break;
                 case IntentType.WriteFile:
                     break;

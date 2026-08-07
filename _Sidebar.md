@@ -1,6 +1,6 @@
 **Configuration**
 * [tusdotnet](Configure-tusdotnet)
-* [TusDiskStore](Configure-tusdiskstore)
+* [TusDiskStore](Configure-TusDiskStore)
 * [IIS](Configure-IIS)
 * [Kestrel](Configure-Kestrel)
 * [Other reverse proxies](Configure-other-reverse-proxies)
@@ -24,9 +24,9 @@
 * [OnBeforeDelete](OnBeforeDelete-event)
 * [OnDeleteComplete](OnDeleteComplete-event)
 
-**Customize**
+**Customization**
 * [Custom data store](Custom-data-store)
-* [Custom file id provider](Custom-File-Id-Provider)
+* [Custom file ID provider](Custom-File-Id-Provider)
 * [Custom file lock](Custom-File-Lock)
 
 **Technical**

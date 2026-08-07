@@ -1,4 +1,4 @@
-tusdotnet ships with a single store, the TusDiskStore, which saves files in a directory on disk. You can implement your own store by implementing one or more of the following interfaces. tusdotnet will automatically handle requests and add information to the Tus-Extension header depending on what interfaces are implemented by the store used for the request.
+tusdotnet ships with a single store, `TusDiskStore`, which saves files in a directory on disk. You can implement your own store by implementing one or more of the following interfaces. tusdotnet will automatically handle requests and add information to the Tus-Extension header depending on what interfaces are implemented by the store used for the request.
 
 Please note that some methods might be called multiple times during request execution. It is up to the store to properly cache data.
 
@@ -10,21 +10,21 @@ The most common interfaces to implement are [ITusStore](#itusstore), [ITusCreati
 * [ITusChecksumStore](#ituschecksumstore) - Support for the Checksum extension (checksum verification of files)
 * [ITusConcatenationStore](#itusconcatenationstore) - Support for the Concatenation extension (merging multiple files together with a single command)
 * [ITusCreationStore](#ituscreationstore) - Support for the Creation extension (creating new files)
-* [ITusCreationDeferLength](#ituscreationdeferlengthstore) - Support for Upload-Defer-Length (sub extension of Creation)
+* [ITusCreationDeferLengthStore](#ituscreationdeferlengthstore) - Support for Upload-Defer-Length (sub extension of Creation)
 * [ITusReadableStore](#itusreadablestore) - Support for reading files from the store (e.g. for downloads or processing)
 * [ITusTerminationStore](#itusterminationstore) - Support for the Termination extension (deleting files)
-* [ITusExpirationStore](#itusexpirationstore) - Support for the Expiration extensions (files expire after a period of time)
+* [ITusExpirationStore](#itusexpirationstore) - Support for the Expiration extension (files expire after a period of time)
 
 ## ITusStore
 Required: yes | Tus-Extension: \<none\>
 
 This is the interface for the core protocol. It must be implemented for the store to work.
 
-Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
+Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
-*Note*: It is recommended to implement [ITusPipelineStore](#ituspipelinestore) instead of this interface if running on modern platforms (.NET Core 3.1 or later).
+> :information_source: It is recommended to implement [ITusPipelineStore](#ituspipelinestore) instead of this interface if running on modern platforms (.NET Core 3.1 or later).
 
-*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `stream.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
+> :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `stream.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
 
 ```csharp
 public interface ITusStore
@@ -41,7 +41,7 @@ public interface ITusStore
 	Task<long> AppendDataAsync(string fileId, Stream stream, CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Check if a file exist.
+	/// Check if a file exists.
 	/// </summary>
 	/// <param name="fileId">The id of the file to check.</param>
 	/// <param name="cancellationToken">Cancellation token to use when cancelling.</param>
@@ -71,9 +71,9 @@ Required: no | Tus-Extension: \<none\>
 
 This is the interface for the core protocol when using System.IO.Pipelines for reading. Using System.IO.Pipelines increases performance in regard to CPU usage, memory consumption and throughput. This interface inherits from `ITusStore`. It is recommended to implement this interface instead of `ITusStore` if running on modern platforms (.NET Core 3.1 or later).
 
-Read more: http://tus.io/protocols/resumable-upload.html#core-protocol
+Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
-*Note*: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the pipe instead of doing an additional pass of the written data.
+> :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the pipe instead of doing an additional pass of the written data.
 
 ```csharp
 public interface ITusPipelineStore : ITusStore
@@ -96,9 +96,9 @@ Required: no | Tus-Extension: checksum
 
 This interface adds support for checksum verification of files. The `VerifyChecksumAsync` must remove all uploaded data in the last chunk if this method is about to return false. See the protocol specification for more details.
 
-*Note*: If this interface is implemented one can use the `GetUploadChecksumInfo` extension method in `AppendDataAsync` to get the client's provided checksum information. The extension method is available for both the stream and the pipe reader implementation. See [ITusStore](#itusstore) or [ITusPipelineStore](#ituspipelinestore) for more details.
+> :information_source: If this interface is implemented one can use the `GetUploadChecksumInfo` extension method in `AppendDataAsync` to get the client's provided checksum information. The extension method is available for both the stream and the pipe reader implementation. See [ITusStore](#itusstore) or [ITusPipelineStore](#ituspipelinestore) for more details.
 
-Read more: http://tus.io/protocols/resumable-upload.html#checksum
+Read more: https://tus.io/protocols/resumable-upload.html#checksum
 
 ```csharp
 public interface ITusChecksumStore
@@ -125,11 +125,11 @@ public interface ITusChecksumStore
 ## ITusConcatenationStore
 Required: no | Tus-Extension: concatenation
 
-*Note*: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
+> :information_source: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
 
 This interface adds support for the concatenation extension which allows a client to concatenate multiple files into a final file with a single POST request. 
 
-Read more: http://tus.io/protocols/resumable-upload.html#concatenation
+Read more: https://tus.io/protocols/resumable-upload.html#concatenation
 
 ```csharp
 public interface ITusConcatenationStore
@@ -169,7 +169,7 @@ Required: no | Tus-Extension: creation
 
 This interface handles the creation extension of the protocol and is used for creating file references that one can later upload data to using the core protocol.
 
-Read more: http://tus.io/protocols/resumable-upload.html#creation
+Read more: https://tus.io/protocols/resumable-upload.html#creation
 
 ```csharp
 public interface ITusCreationStore
@@ -196,13 +196,13 @@ public interface ITusCreationStore
 ## ITusCreationDeferLengthStore
 Required: no | Tus-Extension: creation-defer-length
 
-*Note*: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
+> :information_source: This extension requires that [ITusCreationStore](#ituscreationstore) is also implemented.
 
-Creation-defer-length is a sub extension of the creation extension that allows users to create files without knowing the size of the upload in advance. 
+Creation-Defer-Length is a sub-extension of the creation extension that allows clients to create files without knowing the size of the upload in advance. 
 
-*Note*: Calls to `CreateFileAsync` (`ITusCreationStore`) and `CreatePartialFileAsync` (`ITusConcatenationStore`) will be invoked with `-1` as the length of the file if this interface is implemented and the user choses to use this feature.
+> :information_source: Calls to `CreateFileAsync` (`ITusCreationStore`) and `CreatePartialFileAsync` (`ITusConcatenationStore`) will be invoked with `-1` as the length of the file if this interface is implemented and the client chooses to use this feature.
 
-Read more at: http://tus.io/protocols/resumable-upload.html#upload-defer-length
+Read more at: https://tus.io/protocols/resumable-upload.html#upload-defer-length
 
 ```csharp
 public interface ITusCreationDeferLengthStore
@@ -223,7 +223,7 @@ Required: no | Tus-Extension: termination
 
 This interface adds support for the termination extension allowing clients to delete files.
 
-Read more: http://tus.io/protocols/resumable-upload.html#termination
+Read more: https://tus.io/protocols/resumable-upload.html#termination
 
 ```csharp
 public interface ITusTerminationStore
@@ -241,7 +241,7 @@ public interface ITusTerminationStore
 ## ITusReadableStore
 Required: no | Tus-Extension: \<none\>
 
-ITusReadableStore is a simple interface that is not part of the tus spec. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](Downloading-files) page.
+`ITusReadableStore` is a simple interface that is not part of the tus protocol. It is used to help reading data from a data store and making it easier to e.g. download files or process uploaded files. An example of how to use the interface can be found on the [Downloading files](Downloading-files) page.
 
 ```csharp
 public interface ITusReadableStore
@@ -260,9 +260,9 @@ public interface ITusReadableStore
 ## ITusExpirationStore
 Required: no | Tus-Extension: expiration
 
-This interface adds support for the expiration extension allowing the server to remove incomplete files after a period of time. Files that have expired will return 404 by tusdotnet. Files are still accessible for the server using the store's methods.
+This interface adds support for the expiration extension allowing the server to remove incomplete files after a period of time. Files that have expired will receive a 404 response from tusdotnet. Files are still accessible for the server using the store's methods.
 
-Read more: http://tus.io/protocols/resumable-upload.html#expiration
+Read more: https://tus.io/protocols/resumable-upload.html#expiration
 
 Read more on the wiki on [how to setup cleanup of expired files](Removing-expired-incomplete-files)
 

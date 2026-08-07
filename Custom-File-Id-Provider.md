@@ -1,11 +1,11 @@
-`TusDiskStore` uses file id providers upon creating files to generate valid file ids. The default file id provider is `GuidFileIdProvider` but you can use a different file id provider by passing it to the constructor of `TusDiskStore`. tusdotnet is shipped with  the following file id providers: 
+`TusDiskStore` uses file ID providers upon creating files to generate valid file IDs. The default file ID provider is `GuidFileIdProvider` but you can use a different file ID provider by passing it to the constructor of `TusDiskStore`. tusdotnet ships with the following file ID providers:
 
- - `GuidFileIdProvider` generates GUIDs (example id: `def1853a4a72464eb8b0d357c4f6e8a5`, using guidFormat = "n")
- - `Base64FileIdProvider`: generates base64 ids (example id: `KjJA5IoF2Bdi58B7KK5pRw`, using byteLength = 16)
+ - `GuidFileIdProvider` generates GUIDs (example ID: `def1853a4a72464eb8b0d357c4f6e8a5`, using guidFormat = "n")
+ - `Base64FileIdProvider`: generates base64 IDs (example ID: `KjJA5IoF2Bdi58B7KK5pRw`, using byteLength = 16)
  
-Tip: If you want to generate file ids similar to youtubes video ids, use `Base64FileIdProvider(byteLength: 8)`. This will generate file ids that look like this: `xQs3c615q5M`
+Tip: If you want to generate file IDs similar to YouTube's video IDs, use `Base64FileIdProvider(byteLength: 8)`. This will generate file IDs that look like this: `xQs3c615q5M`
  
-If you want more control over the generated ids, you can create your own file id provider using the `ITusFileIdProvider` interface.
+If you want more control over the generated IDs, you can create your own file ID provider using the `ITusFileIdProvider` interface.
 
 For example you can use your database as a file id provider:
 

@@ -1,11 +1,11 @@
-tusdotnet supports processing of a file once it has been completed using the `OnFileCompleteAsync` callback. The tus protocol, and by extension tusdotnet, separates the upload of the file from the processing of the file content. Post-processing can be done either synchronously during the final upload request or asynchronously after the request has completed. Both approaches have their advantages and disadvantages.
+tusdotnet supports processing of a file once it has been completed using the `OnFileCompleteAsync` event handler. The tus protocol, and by extension tusdotnet, separates the upload of the file from the processing of the file content. Post-processing can be done either synchronously during the final upload request or asynchronously after the request has completed. Both approaches have their advantages and disadvantages.
 
 > :information_source: Note that this event only fires once when the upload completes and will not be fired on additional checks for upload status.
 
 ## Sync processing
 
 * **Immediate Response**: Returns the response directly to the client in the final upload request.
-* **No Retry Mechanism**: Cannot be retried. If an error occurs during processing, the tus client will see that the file is already completely uploaded and won't retry the operation.
+* **No Retry Mechanism**: Cannot be retried. If an error occurs during processing, the tus client will see that the file is already completely uploaded and will not retry the operation.
 * **Limited Response Content**: tus does not allow for content to be returned for successful write operations, as the response must be `204 No Content`. However, headers can be used to provide small amounts of data.
 * **Resource Availability**: The server might not have the resources to process the file immediately.
 

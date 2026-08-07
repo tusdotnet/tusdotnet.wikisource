@@ -120,7 +120,7 @@ See [Processing a completed upload](Processing-a-file-once-the-file-upload-is-co
 
 ## Passing data between events
 
-Events are separate callbacks with no built-in shared state. `HttpContext.Items` is a per-request dictionary available in all events via `ctx.HttpContext.Items` and works well for passing data from an early event to a later one.
+Events are separate event handlers with no built-in shared state. `HttpContext.Items` is a per-request dictionary available in all events via `ctx.HttpContext.Items` and works well for passing data from an early event to a later one.
 
 A common example is looking up a database record in `OnBeforeCreateAsync` and reusing it in `OnCreateCompleteAsync` without hitting the database twice:
 
