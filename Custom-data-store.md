@@ -26,6 +26,21 @@ Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
 > :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `stream.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
 
+*Note*: `cancellationToken` in `AppendDataAsync` is based on the request abort token (`HttpContext.RequestAborted` / OWIN `CallCancelled`) with extra internal guarding for client-disconnect detection and read-timeout handling.
+
+The `Stream` passed to `ITusStore.AppendDataAsync` is already wrapped by tusdotnet with these guards:
+
+- Disconnect-related read failures are translated into EOF-like reads (`0` bytes) instead of bubbling up as store-facing read exceptions.
+- Total read size is bounded for the request; reading beyond allowed size (`Upload-Length` or `Tus-Max-Size`) will fail with a `MaxReadSizeExceededException`
+- If checksum is enabled and provided by the client, checksum information is attached and retrievable via the `pipeReader.GetUploadChecksumInfo()` extension method.
+
+Practical guidance for store implementations:
+
+- Use `cancellationToken` while **reading** from the request body.
+- Treat `ReadAsync(...) == 0` as end-of-request data (including abrupt disconnect scenarios).
+- If bytes have already been read from the client, still try to persist those bytes ("store as much as possible" per tus protocol).
+- Keep write/commit logic consistent so a disconnect does not leave the upload in a partially-updated internal state.
+
 ```csharp
 public interface ITusStore
 {
@@ -75,6 +90,30 @@ Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
 > :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the pipe instead of doing an additional pass of the written data.
 
+*Note*: `cancellationToken` in `AppendDataAsync` is based on the request abort token (`HttpContext.RequestAborted`) with extra internal guarding for client-disconnect detection and read-timeout handling.
+
+The `PipeReader` passed to `ITusPipelineStore.AppendDataAsync` is already wrapped by tusdotnet with these guards:
+
+- Disconnect-related reader failures are handled internally; reads return an empty/canceled `ReadResult` instead of surfacing disconnect exceptions.
+- Total read size is bounded for the request; reading beyond allowed size (`Upload-Length` or `Tus-Max-Size`) will fail with a `MaxReadSizeExceededException`.
+- If checksum is enabled and provided by the client, checksum information is attached and retrievable via the `pipeReader.GetUploadChecksumInfo()` extension method.
+
+Practical guidance for store implementations:
+
+- Use `cancellationToken` while reading.
+- Stop reading when `cancellationToken` is cancelled, `ReadResult.IsCanceled` is set, or `ReadResult.IsCompleted` is set. These are distinct signals and all three must be checked. A helper like the one below (used internally by `TusDiskStore`) covers all cases:
+
+```csharp
+private static bool PipeReadingIsDone(ReadResult result, CancellationToken cancellationToken)
+{
+    return cancellationToken.IsCancellationRequested
+        || result.IsCanceled
+        || result.IsCompleted;
+}
+```
+
+- Keep write/commit logic consistent so a disconnect does not leave the upload in a partially-updated internal state.
+
 ```csharp
 public interface ITusPipelineStore : ITusStore
 {
@@ -91,6 +130,16 @@ public interface ITusPipelineStore : ITusStore
 }
 ```
 
+Since `ITusPipelineStore` inherits `ITusStore`, the stream-based `AppendDataAsync` must also be implemented. It can simply delegate to the pipe implementation:
+
+```csharp
+// ITusStore.AppendDataAsync — delegate to the PipeReader implementation above
+public Task<long> AppendDataAsync(string fileId, Stream stream, CancellationToken cancellationToken)
+{
+    return AppendDataAsync(fileId, PipeReader.Create(stream), cancellationToken);
+}
+```
+
 ## ITusChecksumStore
 Required: no | Tus-Extension: checksum
 
@@ -98,7 +147,10 @@ This interface adds support for checksum verification of files. The `VerifyCheck
 
 > :information_source: If this interface is implemented one can use the `GetUploadChecksumInfo` extension method in `AppendDataAsync` to get the client's provided checksum information. The extension method is available for both the stream and the pipe reader implementation. See [ITusStore](#itusstore) or [ITusPipelineStore](#ituspipelinestore) for more details.
 
-Read more: https://tus.io/protocols/resumable-upload.html#checksum
+
+*Note*: For checksum trailers (`checksum-trailer` extension), tusdotnet may call `VerifyChecksumAsync` with the fallback checksum marker when the trailer is missing/invalid/disconnected. Use `tusdotnet.Helpers.ChecksumTrailerHelper.IsFallback(algorithm, checksum)` to detect this and discard/rollback the last chunk. In this cleanup path, the request cancellation token may already be cancelled.
+
+Read more: http://tus.io/protocols/resumable-upload.html#checksum
 
 ```csharp
 public interface ITusChecksumStore
