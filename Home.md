@@ -32,6 +32,9 @@ Here you can find the most common information that we think is necessary to use 
 * [OnBeforeDelete](OnBeforeDelete-event)
 * [OnDeleteComplete](OnDeleteComplete-event)
 
+**File locking**
+* [Custom file locks](Custom-File-Lock)
+* [Leased file locks](Leased-File-Locks)
 
 **Customization**
 * [Custom data store](Custom-data-store)

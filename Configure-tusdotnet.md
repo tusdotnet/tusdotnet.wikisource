@@ -148,6 +148,13 @@ To disable all extensions:
 AllowedExtensions = TusExtensions.None
 ```
 
+# Locking
+
+tusdotnet uses file locks to prevent concurrent operations on the same file.
+
+* [Custom file lock](Custom-File-Lock) - Learn how use the built-in lock providers and how to implement a custom file lock provider
+* [Leased file locks](Leased-File-Locks) - Learn how to implement lease-based locking, handling lost leases, and protecting storage from writes by requests that have lost their lease.
+
 # Endpoint routing or middleware?
 
 tusdotnet supports running both as an endpoint and as a middleware. Which one to choose depends on the use case. 
