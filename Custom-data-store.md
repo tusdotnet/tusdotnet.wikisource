@@ -26,6 +26,16 @@ Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
 > :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `stream.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the stream instead of doing an additional pass of the written data.
 
+> :information_source: A note on distributed locks
+>
+> tusdotnet uses resource locking to prevent concurrent modifications to the same upload. However, distributed locks can be lost while a request is in progress, potentially allowing stale writes (for example, between reading and writing data).
+>
+> Whether additional protection is needed depends on your storage backend. Local file locks and conditional writes using ETags may already provide sufficient protection.
+>
+> If your store relies on an external lock for write protection, we recommend checking the lock's lock-lost token on the stream passed to AppendDataAsync before committing data. Alternatively, consider using fencing tokens supported by your storage backend.
+>
+> See [Leased file locks](Leased-File-Locks) for details and implementation guidance.
+
 *Note*: `cancellationToken` in `AppendDataAsync` is based on the request abort token (`HttpContext.RequestAborted` / OWIN `CallCancelled`) with extra internal guarding for client-disconnect detection and read-timeout handling.
 
 The `Stream` passed to `ITusStore.AppendDataAsync` is already wrapped by tusdotnet with these guards:
@@ -89,6 +99,16 @@ This is the interface for the core protocol when using System.IO.Pipelines for r
 Read more: https://tus.io/protocols/resumable-upload.html#core-protocol
 
 > :information_source: If the store also implements [ITusChecksumStore](#ituschecksumstore) and the client provided a checksum, one can get the checksum information by calling the extension method `pipeReader.GetUploadChecksumInfo()`. This can increase performance in some cases as the checksum can be calculated while reading the pipe instead of doing an additional pass of the written data.
+
+> :information_source: A note on distributed locks
+>
+> tusdotnet uses resource locking to prevent concurrent modifications to the same upload. However, distributed locks can be lost while a request is in progress, potentially allowing stale writes (for example, between reading and writing data).
+>
+> Whether additional protection is needed depends on your storage backend. Local file locks and conditional writes using ETags may already provide sufficient protection.
+>
+> If your store relies on an external lock for write protection, we recommend checking the lock's lock-lost token on the pipe reader passed to AppendDataAsync before committing data. Alternatively, consider using fencing tokens supported by your storage backend.
+>
+> See [Leased file locks](Leased-File-Locks) for details and implementation guidance.
 
 *Note*: `cancellationToken` in `AppendDataAsync` is based on the request abort token (`HttpContext.RequestAborted`) with extra internal guarding for client-disconnect detection and read-timeout handling.
 
